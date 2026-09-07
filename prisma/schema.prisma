@@ -1,0 +1,109 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String?  @unique
+  phone        String?  @unique
+  email        String?  @unique
+  name         String
+  passwordHash String
+  role         String   @default("ADMIN") // ADMIN, COURIER, CUSTOMER
+  avatar       String?
+  address      String?
+  createdAt    DateTime @default(now())
+}
+
+model Category {
+  id        String    @id
+  name      String
+  icon      String?
+  sortOrder Int       @default(0)
+  products  Product[]
+}
+
+model Product {
+  id          String   @id
+  name        String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  price       Float
+  oldPrice    Float?
+  weight      String?
+  calories    String?
+  image       String
+  description String?
+  inStock     Boolean  @default(true)
+  optionsJson String?  @default("[]") // JSON string of options [{name, price}]
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id             String      @id
+  orderNumber    String?     @unique
+  customerName   String
+  phone          String
+  address        String
+  deliveryType   String      @default("delivery") // delivery, pickup
+  paymentMethod  String      @default("cash")     // payme, click, card, cash
+  paymentStatus  String      @default("pending")  // pending, paid, cash_on_delivery
+  status         String      @default("cooking")  // new, cooking, delivering, completed, cancelled
+  itemsTotal     Float
+  discountAmount Float       @default(0)
+  promoCode      String?
+  deliveryFee    Float       @default(0)
+  total          Float
+  comment        String?
+  createdAt      DateTime    @default(now())
+  items          OrderItem[]
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  name        String
+  price       Float
+  quantity    Int
+  optionsJson String? @default("[]")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  author    String
+  avatar    String?
+  rating    Int
+  text      String
+  date      String?
+  status    String   @default("approved") // approved, pending, rejected
+  createdAt DateTime @default(now())
+}
+
+model CafeSettings {
+  id                   String  @id @default("default")
+  cafeName             String  @default("AMERICAN")
+  phone                String  @default("+998 90 822 01 01")
+  address              String  @default("ул. Амира Темура, 45")
+  deliveryFee          Float   @default(15000)
+  freeDeliveryThreshold Float  @default(150000)
+  minOrderAmount       Float   @default(30000)
+  isOpen               Boolean @default(true)
+  workHours            String  @default("09:00 – 22:00")
+  bannerText           String  @default("Бесплатная доставка от 150 000 сум! 🔥")
+}
+
+model PromoCode {
+  id              String  @id @default(cuid())
+  code            String  @unique
+  discountPercent Float   @default(0)
+  discountAmount  Float   @default(0)
+  minOrder        Float   @default(0)
+  isActive        Boolean @default(true)
+}

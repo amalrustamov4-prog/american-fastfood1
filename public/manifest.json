@@ -1,0 +1,22 @@
+{
+  "name": "AMERICAN | Premium Fast Food",
+  "short_name": "American FastFood",
+  "description": "Сочные бургеры, лаваши, пицца, хот-доги, суши и чизкейки Сан-Себастьян",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0D14",
+  "theme_color": "#FF5500",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

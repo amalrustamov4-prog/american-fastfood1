@@ -1,0 +1,1709 @@
+[
+  {
+    "id": "prod-burger-1",
+    "name": "Gamburger (Гамбургер)",
+    "category": "burgers",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "520 ккал",
+    "image": "images/photo_2026-08-28_17-22-56.jpg",
+    "description": "Пышная кунжутная булочка, сочная говяжья котлета гриль, маринованный лук, помидоры, соленые огурцы, свежий салат и фирменный бургер-соус.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сыр Чеддер",
+        "price": 5000
+      },
+      {
+        "name": "Халапеньо",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-burger-2",
+    "name": "Chizburger (Чизбургер)",
+    "category": "burgers",
+    "price": 38000,
+    "oldPrice": null,
+    "weight": "300 г",
+    "calories": "580 ккал",
+    "image": "images/photo_2026-08-28_17-22-59.jpg",
+    "description": "Котлета из отборной говядины на гриле, расплавленный сыр Чеддер, томаты, красный лук, огурчики и фирменный соус.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Двойной сыр",
+        "price": 5000
+      },
+      {
+        "name": "Хрустящий бекон",
+        "price": 8000
+      }
+    ]
+  },
+  {
+    "id": "prod-burger-3",
+    "name": "Big Burger (Биг Бургер)",
+    "category": "burgers",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "380 г",
+    "calories": "740 ккал",
+    "image": "images/photo_2026-08-28_17-23-01.jpg",
+    "description": "Две сочные говяжьи котлеты гриль, спелые томаты, красный лук, маринованные огурцы, двойной соус.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сыр Чеддер",
+        "price": 5000
+      },
+      {
+        "name": "Халапеньо",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-burger-4",
+    "name": "Big Chizburger (Биг Чизбургер)",
+    "category": "burgers",
+    "price": 49000,
+    "oldPrice": null,
+    "weight": "410 г",
+    "calories": "820 ккал",
+    "image": "images/photo_2026-08-28_17-23-03.jpg",
+    "description": "Двойная говяжья котлета, двойной сыр Чеддер, сочные томаты, кольца красного лука и салат.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Экстра бекон",
+        "price": 8000
+      },
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-burger-5",
+    "name": "Mini Gamburger Set (5 шт + Фри)",
+    "category": "burgers",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "650 г",
+    "calories": "1150 ккал",
+    "image": "images/photo_2026-08-28_17-23-04.jpg",
+    "description": "Аппетитный сет из 5 мини-гамбургеров с сочными мясными котлетами и хрустящим картофелем фри.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-burger-6",
+    "name": "Mini Chickenburger Set (5 шт + Фри)",
+    "category": "burgers",
+    "price": 80000,
+    "oldPrice": null,
+    "weight": "620 г",
+    "calories": "1080 ккал",
+    "image": "images/photo_2026-08-28_17-23-06.jpg",
+    "description": "Сет из 5 мини-чикенбургеров с хрустящим куриным филе, соусом и золотистым картофелем фри.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-lavash-1",
+    "name": "Lavash Classic (Классический)",
+    "category": "lavash",
+    "price": 42000,
+    "oldPrice": null,
+    "weight": "350 г",
+    "calories": "610 ккал",
+    "image": "images/photo_2026-08-28_17-24-51.jpg",
+    "description": "Рубленая говядина гриль, хрустящие огурчики, спелые томаты, свежая зелень и фирменный чесночный соус.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сыр Моцарелла",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-lavash-2",
+    "name": "Lavash Sirli (Сырный)",
+    "category": "lavash",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "380 г",
+    "calories": "670 ккал",
+    "image": "images/photo_2026-08-28_17-24-52.jpg",
+    "description": "Сочная говядина гриль с щедрым слоем расплавленного сыра, томатами и свежими огурцами.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-lavash-3",
+    "name": "Tandir Lavash (Тандырный)",
+    "category": "lavash",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "370 г",
+    "calories": "640 ккал",
+    "image": "images/photo_2026-08-28_17-24-54.jpg",
+    "description": "Запеченный в тандыре лаваш в ароматном кунжуте с сочной говядиной и чесночным соусом.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сыр Моцарелла",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-lavash-4",
+    "name": "Tandir Lavash Sirli (Тандырный Сырный)",
+    "category": "lavash",
+    "price": 48000,
+    "oldPrice": null,
+    "weight": "400 г",
+    "calories": "710 ккал",
+    "image": "images/photo_2026-08-28_17-24-55.jpg",
+    "description": "Тандырный лаваш в золотистом кунжуте с тягучим сыром Моцарелла и рубленой говядиной.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-lavash-5",
+    "name": "Donar Kebab (Донар в булочке)",
+    "category": "lavash",
+    "price": 43000,
+    "oldPrice": null,
+    "weight": "340 г",
+    "calories": "620 ккал",
+    "image": "images/photo_2026-08-28_17-24-57.jpg",
+    "description": "Пышная круглая булочка с кунжутом, натертая говядина гриль, томаты, огурцы и соус.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сыр Чеддер",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-lavash-6",
+    "name": "Pitta (Греческая питта с мясом)",
+    "category": "lavash",
+    "price": 44000,
+    "oldPrice": null,
+    "weight": "320 г",
+    "calories": "590 ккал",
+    "image": "images/photo_2026-08-28_17-24-58.jpg",
+    "description": "Свежевыпеченная лепешка питта с начинкой из сочного мяса на углях, свежих овощей и соуса.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Порция 120г",
+        "price": 4000
+      },
+      {
+        "name": "Порция 140г",
+        "price": 8000
+      }
+    ]
+  },
+  {
+    "id": "prod-hotdog-1",
+    "name": "Hot Dog Classic",
+    "category": "hotdogs",
+    "price": 20000,
+    "oldPrice": null,
+    "weight": "200 г",
+    "calories": "390 ккал",
+    "image": "images/photo_2026-08-28_17-25-05.jpg",
+    "description": "Мягкая булочка, сосиска гриль, свежие томаты, огурчики, горчичный и фирменный соус.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сыр",
+        "price": 3000
+      }
+    ]
+  },
+  {
+    "id": "prod-hotdog-2",
+    "name": "Hot Dog Korolevskiy (Королевский)",
+    "category": "hotdogs",
+    "price": 33000,
+    "oldPrice": null,
+    "weight": "290 г",
+    "calories": "540 ккал",
+    "image": "images/photo_2026-08-28_17-25-08.jpg",
+    "description": "Двойная длинная сосиска с насечками, сыр Чеддер, свежий салат, томаты, соус.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-hotdog-3",
+    "name": "Hot Dog American",
+    "category": "hotdogs",
+    "price": 38000,
+    "oldPrice": null,
+    "weight": "310 г",
+    "calories": "590 ккал",
+    "image": "images/photo_2026-08-28_17-25-10.jpg",
+    "description": "Большой фирменный хот-дог с премиальной сосиской, ломтиками сыра, овощами и соусом.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-hotdog-4",
+    "name": "Hot Dog Go'shtli (Мясной)",
+    "category": "hotdogs",
+    "price": 42000,
+    "oldPrice": null,
+    "weight": "330 г",
+    "calories": "630 ккал",
+    "image": "images/photo_2026-08-28_17-25-11.jpg",
+    "description": "Хот-дог с настоящим рубленым мясом говядины на гриле, сыром Чеддер и свежими овощами.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-snack-1",
+    "name": "Klab Sandwich (Клаб-сэндвич с фри)",
+    "category": "hotdogs",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "420 г",
+    "calories": "780 ккал",
+    "image": "images/photo_2026-08-28_17-25-13.jpg",
+    "description": "Треугольные хрустящие тосты с куриным филе, сыром, свежими томатами, салатом и порцией фри.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-snack-2",
+    "name": "Strips (Куриные стрипсы 3 шт)",
+    "category": "chicken",
+    "price": 23000,
+    "oldPrice": null,
+    "weight": "150 г",
+    "calories": "320 ккал",
+    "image": "images/photo_2026-08-28_17-25-14.jpg",
+    "description": "Нежнейшее куриное филе в хрустящей золотистой панировке.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-snack-3",
+    "name": "Strips (Куриные стрипсы 5 шт)",
+    "category": "chicken",
+    "price": 33000,
+    "oldPrice": null,
+    "weight": "240 г",
+    "calories": "480 ккал",
+    "image": "images/photo_2026-08-28_17-25-19.jpg",
+    "description": "Большая порция хрустящих куриных стрипсов из сочного филе.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-snack-4",
+    "name": "Fri Classic (Картофель фри)",
+    "category": "chicken",
+    "price": 28000,
+    "oldPrice": null,
+    "weight": "180 г",
+    "calories": "380 ккал",
+    "image": "images/photo_2026-08-28_17-25-16.jpg",
+    "description": "Золотистый хрустящий картофель фри со специями.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Кетчуп",
+        "price": 3000
+      },
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-snack-5",
+    "name": "Fri Derevenskiy (По-деревенски)",
+    "category": "chicken",
+    "price": 28000,
+    "oldPrice": null,
+    "weight": "200 г",
+    "calories": "390 ккал",
+    "image": "images/photo_2026-08-28_17-25-20.jpg",
+    "description": "Крупные ароматные дольки картофеля, обжаренные с чесноком и зеленью.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Чесночный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-snack-6",
+    "name": "KFC Bayts (Куриные байтсы)",
+    "category": "chicken",
+    "price": 28000,
+    "oldPrice": null,
+    "weight": "170 г",
+    "calories": "370 ккал",
+    "image": "images/photo_2026-08-28_17-25-22.jpg",
+    "description": "Сочные кусочки отборного куриного филе в хрустящей панировке.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Сырный соус",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-snack-7",
+    "name": "Sarimsoqli non (Чесночный хлеб 6 шт)",
+    "category": "chicken",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "220 г",
+    "calories": "410 ккал",
+    "image": "images/photo_2026-08-28_17-24-17.jpg",
+    "description": "Ароматные хрустящие тосты с чесночным маслом, сыром и зеленью.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-pizza-1",
+    "name": "Pizza Chicago",
+    "category": "pizza",
+    "price": 85000,
+    "oldPrice": null,
+    "weight": "Средняя / 650 г",
+    "calories": "1350 ккал",
+    "image": "images/photo_2026-08-28_17-23-08.jpg",
+    "description": "Maxsus sous, mozzarella pishlog'i, tovuq go'shti, makka jo'xori, balgarski, qo'ziqorin.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 15000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-2",
+    "name": "Pizza Las Vegas",
+    "category": "pizza",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "Средняя / 680 г",
+    "calories": "1400 ккал",
+    "image": "images/photo_2026-08-28_17-23-10.jpg",
+    "description": "Maxsus sous, gauda pishlog'i, motsarella, tuzlangan bodring, balgarski, indeyka, qora zaytun, tovuq.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 10000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-3",
+    "name": "Pizza Miami",
+    "category": "pizza",
+    "price": 95000,
+    "oldPrice": null,
+    "weight": "Средняя / 700 г",
+    "calories": "1480 ккал",
+    "image": "images/photo_2026-08-28_17-23-12.jpg",
+    "description": "Mol go'shti, shampinyon, maxsus sous, xoxland pishlog'i, gauda, motsarella.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 25000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-4",
+    "name": "Pizza New York",
+    "category": "pizza",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "Средняя / 670 г",
+    "calories": "1420 ккал",
+    "image": "images/photo_2026-08-28_17-23-14.jpg",
+    "description": "Maxsus sous, mozarella, mol go'shti, tovuq go'shti, indeyka, qo'ziqorin, balgarski, makka jo'xori.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 10000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-5",
+    "name": "Pizza Xanter",
+    "category": "pizza",
+    "price": 85000,
+    "oldPrice": null,
+    "weight": "Средняя / 650 г",
+    "calories": "1360 ккал",
+    "image": "images/photo_2026-08-28_17-23-16.jpg",
+    "description": "Tovuq go'shti, kolbasa, bodring, qo'ziqorin, gauda pishlog'i.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 15000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-6",
+    "name": "Pizza Qazili (Пицца с казы)",
+    "category": "pizza",
+    "price": 100000,
+    "oldPrice": null,
+    "weight": "Средняя / 710 г",
+    "calories": "1520 ккал",
+    "image": "images/photo_2026-08-28_17-24-03.jpg",
+    "description": "Pishloq motsarella, haqiqiy qazi bo'laklari, qizil piyoz.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 20000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-7",
+    "name": "Pizza Miks",
+    "category": "pizza",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "Средняя / 680 г",
+    "calories": "1440 ккал",
+    "image": "images/photo_2026-08-28_17-24-04.jpg",
+    "description": "Pishloq, kolbasa, sosiska, mol go'shti, pomidor, qo'ziqorin, bolgar, zaytun, makka.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 10000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-8",
+    "name": "Pizza Peperoni",
+    "category": "pizza",
+    "price": 85000,
+    "oldPrice": null,
+    "weight": "Средняя / 640 г",
+    "calories": "1390 ккал",
+    "image": "images/photo_2026-08-28_17-24-06.jpg",
+    "description": "Pishloq motsarella, sifatli kolbasa peperoni, oregano.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 10000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-9",
+    "name": "Pizza Sosiska",
+    "category": "pizza",
+    "price": 75000,
+    "oldPrice": null,
+    "weight": "Средняя / 630 г",
+    "calories": "1310 ккал",
+    "image": "images/photo_2026-08-28_17-24-07.jpg",
+    "description": "Pishloq, sosiska, pomidor, qo'ziqorin, bolgar, zaytun, makka.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 10000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-10",
+    "name": "Pizza Tovuq go'shtli",
+    "category": "pizza",
+    "price": 85000,
+    "oldPrice": null,
+    "weight": "Средняя / 650 г",
+    "calories": "1340 ккал",
+    "image": "images/photo_2026-08-28_17-24-09.jpg",
+    "description": "Pishloq, tovuq go'shti, pomidor, qo'ziqorin, bolgar, zaytun, makka.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 15000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-11",
+    "name": "Pizza Mujskoy",
+    "category": "pizza",
+    "price": 95000,
+    "oldPrice": null,
+    "weight": "Средняя / 700 г",
+    "calories": "1490 ккал",
+    "image": "images/photo_2026-08-28_17-24-10.jpg",
+    "description": "Pishloq, mol go'shti, pomidor, qo'ziqorin, bolgar, zaytun, piyoz.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 25000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-12",
+    "name": "Pizza Monaco",
+    "category": "pizza",
+    "price": 75000,
+    "oldPrice": null,
+    "weight": "Средняя / 640 г",
+    "calories": "1320 ккал",
+    "image": "images/photo_2026-08-28_17-24-12.jpg",
+    "description": "Pishloq, sosiska, kolbasa, pomidor, qo'ziqorin, bolgar, zaytun, makka.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 15000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pizza-13",
+    "name": "Pizza Margarita",
+    "category": "pizza",
+    "price": 70000,
+    "oldPrice": null,
+    "weight": "Средняя / 600 г",
+    "calories": "1250 ккал",
+    "image": "images/photo_2026-08-28_17-24-13.jpg",
+    "description": "Motsarella pishlog'i, yangi barra pomidorlar, oregano sousi.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Большой размер (Bolshoy)",
+        "price": 15000
+      },
+      {
+        "name": "Сырный борт",
+        "price": 15000
+      }
+    ]
+  },
+  {
+    "id": "prod-pide-1",
+    "name": "Go'shtli Pide",
+    "category": "pizza",
+    "price": 78000,
+    "oldPrice": null,
+    "weight": "400 г",
+    "calories": "750 ккал",
+    "image": "images/photo_2026-08-28_17-23-18.jpg",
+    "description": "Mol go'shti, pomidor, bolgar qalampiri, piyoz, ko'katlar bilan tayyorlangan turk pidesi.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Qo'shimcha pishloq",
+        "price": 8000
+      }
+    ]
+  },
+  {
+    "id": "prod-pide-2",
+    "name": "Qazili Pide",
+    "category": "pizza",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "420 г",
+    "calories": "810 ккал",
+    "image": "images/photo_2026-08-28_17-23-19.jpg",
+    "description": "Haqiqiy qazi, pishloq, pomidor, bolgar, piyoz, ko'kat.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-pide-3",
+    "name": "Asalli Pide",
+    "category": "pizza",
+    "price": 70000,
+    "oldPrice": null,
+    "weight": "360 г",
+    "calories": "680 ккал",
+    "image": "images/photo_2026-08-28_17-23-21.jpg",
+    "description": "Tabiiy asal va erigan pishloq uyg'unligidagi shirin pide.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-pide-4",
+    "name": "Pepperoni Pide",
+    "category": "pizza",
+    "price": 70000,
+    "oldPrice": null,
+    "weight": "380 г",
+    "calories": "720 ккал",
+    "image": "images/photo_2026-08-28_17-23-23.jpg",
+    "description": "Kolbasa pepperoni va erigan motsarella pishlog'i.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-1",
+    "name": "Salat Istanbul",
+    "category": "salads",
+    "price": 50000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "360 ккал",
+    "image": "images/photo_2026-08-28_17-23-35.jpg",
+    "description": "Bodring, til, salat bargi, bodom, mayonez va maydalangan fistashka.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-2",
+    "name": "Salat Pineapple (Ананас)",
+    "category": "salads",
+    "price": 48000,
+    "oldPrice": null,
+    "weight": "270 г",
+    "calories": "340 ккал",
+    "image": "images/photo_2026-08-28_17-23-37.jpg",
+    "description": "Ananas, tovuq filesi, yong'oq, tuxum, makkajo'xori, salat bargi, mayonez.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-3",
+    "name": "Salat Grecheskiy (Греческий)",
+    "category": "salads",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "260 г",
+    "calories": "220 ккал",
+    "image": "images/photo_2026-08-28_17-23-38.jpg",
+    "description": "Salat bargi, qora zaytun, Feta pishlog'i, svetafor balgarski, pomidor, bodring, limon.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-4",
+    "name": "Salat Sezar (Цезарь)",
+    "category": "salads",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "370 ккал",
+    "image": "images/photo_2026-08-28_17-23-40.jpg",
+    "description": "Aysberg karam, suxarik, bodring, pomidor, tovuq go'shti, tuxum, mayonez, pishloq.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-5",
+    "name": "Salat Apple",
+    "category": "salads",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "260 г",
+    "calories": "310 ккал",
+    "image": "images/photo_2026-08-28_17-23-42.jpg",
+    "description": "Olma, aysberg karam, bodring, tuxum, tovuq file, pishloq, makkajo'xori.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-6",
+    "name": "Salat Barf",
+    "category": "salads",
+    "price": 48000,
+    "oldPrice": null,
+    "weight": "270 г",
+    "calories": "330 ккал",
+    "image": "images/photo_2026-08-28_17-23-44.jpg",
+    "description": "Mol go'shti, qo'ziqorin, bodring, ko'k piyoz, salat bargi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-7",
+    "name": "Salat Mujskoy Kapriz",
+    "category": "salads",
+    "price": 48000,
+    "oldPrice": null,
+    "weight": "290 г",
+    "calories": "420 ккал",
+    "image": "images/photo_2026-08-28_17-23-45.jpg",
+    "description": "Qazi, kolbasa, indeyka, pomidor, bodring, mayonez, pishloq.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-salat-8",
+    "name": "Salat American",
+    "category": "salads",
+    "price": 48000,
+    "oldPrice": null,
+    "weight": "290 г",
+    "calories": "390 ккал",
+    "image": "images/photo_2026-08-28_17-23-47.jpg",
+    "description": "Mol go'shti, tovuq go'shti, qo'ziqorin, bodring, mayonez, gorox.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-1",
+    "name": "Filadelfiya (8 шт)",
+    "category": "sushi",
+    "price": 85000,
+    "oldPrice": null,
+    "weight": "260 г",
+    "calories": "480 ккал",
+    "image": "images/photo_2026-08-28_17-23-49.jpg",
+    "description": "Losos, tvorogli pishloq Cremette, yapon guruchi.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Qo'shimcha sous",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "prod-sushi-2",
+    "name": "Osiyo Roll (8 шт)",
+    "category": "sushi",
+    "price": 60000,
+    "oldPrice": null,
+    "weight": "250 г",
+    "calories": "450 ккал",
+    "image": "images/photo_2026-08-28_17-23-51.jpg",
+    "description": "Losos, tvorogli pishloq, sous unagi, tobika ikrasi, sedana.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-3",
+    "name": "Filadelfiya Classic (8 шт)",
+    "category": "sushi",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "270 г",
+    "calories": "490 ккал",
+    "image": "images/photo_2026-08-28_17-23-52.jpg",
+    "description": "Losos, tvorogli pishloq, barra bodring.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-4",
+    "name": "Hot Salmon (8 шт)",
+    "category": "sushi",
+    "price": 80000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "520 ккал",
+    "image": "images/photo_2026-08-28_17-23-54.jpg",
+    "description": "Issiq qovurilgan tempura roll: losos, bodring, tvorogli pishloq.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-5",
+    "name": "Californiya (8 шт)",
+    "category": "sushi",
+    "price": 80000,
+    "oldPrice": null,
+    "weight": "250 г",
+    "calories": "430 ккал",
+    "image": "images/photo_2026-08-28_17-23-56.jpg",
+    "description": "Krab, bodring, tvorogli pishloq, tobika, yashil olma.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-6",
+    "name": "Avstraliya Roll (8 шт)",
+    "category": "sushi",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "510 ккал",
+    "image": "images/photo_2026-08-28_17-23-58.jpg",
+    "description": "Losos, ugor, tvorogli pishloq, bodring, ko'k piyoz.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-7",
+    "name": "Pishloqli Ugor (8 шт)",
+    "category": "sushi",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "270 г",
+    "calories": "500 ккал",
+    "image": "images/photo_2026-08-28_17-23-59.jpg",
+    "description": "Ugor, tvorogli pishloq, tobika, bodring, sous unagi, sedana.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-8",
+    "name": "Chicken Tempura (8 шт)",
+    "category": "sushi",
+    "price": 80000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "530 ккал",
+    "image": "images/photo_2026-08-28_17-24-02.jpg",
+    "description": "Tovuq go'shti, bodring, tvorogli pishloq, yashil olma.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-9",
+    "name": "Sake Maki (6 шт)",
+    "category": "sushi",
+    "price": 40000,
+    "oldPrice": null,
+    "weight": "160 г",
+    "calories": "280 ккал",
+    "image": "images/photo_2026-08-28_17-24-15.jpg",
+    "description": "Klassik lososli mini maki roll.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-10",
+    "name": "Chicken Maki (6 шт)",
+    "category": "sushi",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "160 г",
+    "calories": "270 ккал",
+    "image": "images/photo_2026-08-28_17-24-16.jpg",
+    "description": "Tovuq go'shtli nozik maki roll.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-11",
+    "name": "Italiano Roll (8 шт)",
+    "category": "sushi",
+    "price": 70000,
+    "oldPrice": null,
+    "weight": "260 г",
+    "calories": "470 ккал",
+    "image": "images/photo_2026-08-28_17-24-38.jpg",
+    "description": "Tvorogli pishloq, tamago, bodring, eritilgan pishloq va unagi sousi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-12",
+    "name": "Filadelfiya Zapechenniy (8 шт)",
+    "category": "sushi",
+    "price": 110000,
+    "oldPrice": null,
+    "weight": "290 г",
+    "calories": "560 ккал",
+    "image": "images/photo_2026-08-28_17-24-39.jpg",
+    "description": "Losos, tvorogli pishloq, sous unagi, spays sous, bodring.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-13",
+    "name": "Canada Roll (8 шт)",
+    "category": "sushi",
+    "price": 90000,
+    "oldPrice": null,
+    "weight": "270 г",
+    "calories": "490 ккал",
+    "image": "images/photo_2026-08-28_17-24-41.jpg",
+    "description": "Tovuq go'shti, tvorogli pishloq, bodring, ko'k piyoz, ayzberg salat, kunjut, spays sous.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-14",
+    "name": "Amazonka Roll (8 шт)",
+    "category": "sushi",
+    "price": 80000,
+    "oldPrice": null,
+    "weight": "260 г",
+    "calories": "480 ккал",
+    "image": "images/photo_2026-08-28_17-24-42.jpg",
+    "description": "Tvorogli pishloq, olma, bodring, krab mayonez, pishloq qalpog'i.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-15",
+    "name": "Samuray Roll (8 шт)",
+    "category": "sushi",
+    "price": 100000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "530 ккал",
+    "image": "images/photo_2026-08-28_17-24-44.jpg",
+    "description": "Losos, tovuq go'shti, tamago, spays sous.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-16",
+    "name": "Unagi Maki (6 шт)",
+    "category": "sushi",
+    "price": 40000,
+    "oldPrice": null,
+    "weight": "160 г",
+    "calories": "290 ккал",
+    "image": "images/photo_2026-08-28_17-24-45.jpg",
+    "description": "Dudlangan ugor balig'i, kunjut, unagi sous.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-17",
+    "name": "Chicken Zapechenniy (8 шт)",
+    "category": "sushi",
+    "price": 85000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "510 ккал",
+    "image": "images/photo_2026-08-28_17-24-47.jpg",
+    "description": "Tovuq go'shti, pishloqli sous, bodring, bulg'or qalampiri, tobika.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-sushi-18",
+    "name": "Kappa Maki (6 шт)",
+    "category": "sushi",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "150 г",
+    "calories": "210 ккал",
+    "image": "images/photo_2026-08-28_17-24-49.jpg",
+    "description": "Bodring, kunjut, nozik yapon guruchi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-set-1",
+    "name": "American Set (32 dona)",
+    "category": "sushi",
+    "price": 340000,
+    "oldPrice": null,
+    "weight": "1100 г",
+    "calories": "2100 ккал",
+    "image": "images/photo_2026-08-28_17-24-19.jpg",
+    "description": "Katta to'plam: «Samuray», «Californiya», «Canada», «Chicken zapechenniy».",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-set-2",
+    "name": "Avtorskiy Set (46 dona)",
+    "category": "sushi",
+    "price": 440000,
+    "oldPrice": null,
+    "weight": "1550 г",
+    "calories": "2900 ккал",
+    "image": "images/photo_2026-08-28_17-24-35.jpg",
+    "description": "Eng katta miks: «Californiya», «Filadelfiya classic», «Hot salmon», «Canada», «Chicken zapechenniy», «Chicken maki».",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-set-3",
+    "name": "Similan Set (30 dona)",
+    "category": "sushi",
+    "price": 320000,
+    "oldPrice": null,
+    "weight": "1050 г",
+    "calories": "1950 ккал",
+    "image": "images/photo_2026-08-28_17-24-36.jpg",
+    "description": "Mazali to'plam: «Chicken tempura», «Filadelfiya zapechenniy», «Canada», «Unagi maki».",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-1",
+    "name": "San Sebastian Lotus",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "220 г",
+    "calories": "510 ккал",
+    "image": "images/photo_2026-08-28_17-25-23.jpg",
+    "description": "Bask chizkeyki boy karamelli Lotus Biscoff pastasi va xurustli pechenyesi bilan.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Qo'shimcha sous Lotus",
+        "price": 8000
+      }
+    ]
+  },
+  {
+    "id": "prod-cake-2",
+    "name": "San Sebastian Nutella",
+    "category": "desserts",
+    "price": 60000,
+    "oldPrice": null,
+    "weight": "220 г",
+    "calories": "530 ккал",
+    "image": "images/photo_2026-08-28_17-25-04.jpg",
+    "description": "Erigan issiq Nutella shokolad-yong'oq sousi bilan qoplangan mashhur San-Sebastyan.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Ikki hissa Nutella",
+        "price": 8000
+      }
+    ]
+  },
+  {
+    "id": "prod-cake-3",
+    "name": "San Sebastian Strawberry (Qulupnay)",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "230 г",
+    "calories": "490 ккал",
+    "image": "images/photo_2026-08-28_17-25-01.jpg",
+    "description": "Muzdek yangi qulupnay bo'laklari va qulupnayli qaymoqli sous bilan.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-4",
+    "name": "San Sebastian Banan",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "230 г",
+    "calories": "510 ккал",
+    "image": "images/photo_2026-08-28_17-25-00.jpg",
+    "description": "Shokoladli sous va yangi banan bo'laklari bilan bezatilgan chizkeyk.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-5",
+    "name": "San Sebastian Chocolate",
+    "category": "desserts",
+    "price": 50000,
+    "oldPrice": null,
+    "weight": "210 г",
+    "calories": "480 ккал",
+    "image": "images/photo_2026-08-28_17-25-02.jpg",
+    "description": "Klassik shokolad sousli San-Sebastyan.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-6",
+    "name": "San Sebastian Nutella Qulupnay",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "240 г",
+    "calories": "540 ккал",
+    "image": "images/photo_2026-08-28_17-25-28.jpg",
+    "description": "Nutella va shirin qulupnay mevalari uyg'unligi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-7",
+    "name": "San Sebastian Nutella Fistashka",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "230 г",
+    "calories": "550 ккал",
+    "image": "images/photo_2026-08-28_17-25-30.jpg",
+    "description": "Nutella sousi va maydalangan yashil eron pistasi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-8",
+    "name": "San Sebastian Bounty",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "230 г",
+    "calories": "530 ккал",
+    "image": "images/photo_2026-08-28_17-25-25.jpg",
+    "description": "Qaymoqli kokos suti, Bounty shokoladi va kokos qirindisi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-9",
+    "name": "San Sebastian Oreo",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "230 г",
+    "calories": "540 ккал",
+    "image": "images/photo_2026-08-28_17-25-26.jpg",
+    "description": "Oreo pechenyesi va shokolad sousi bilan.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-cake-10",
+    "name": "San Sebastian Raffaello",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "230 г",
+    "calories": "540 ккал",
+    "image": "images/photo_2026-08-28_17-25-32.jpg",
+    "description": "Nozik oq qaymoqli krem, kokos va Raffaello konfeti.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-vaffle-1",
+    "name": "Belgium Vaffle Classic",
+    "category": "desserts",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "200 г",
+    "calories": "420 ккал",
+    "image": "images/photo_2026-08-28_17-23-28.jpg",
+    "description": "Klassik qarsildoq Belgiya vaflisi shokolad bilan.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Nutella bilan",
+        "price": 10000
+      }
+    ]
+  },
+  {
+    "id": "prod-vaffle-2",
+    "name": "Belgium Vaffle Nutella Banan Qulupnay",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "270 г",
+    "calories": "520 ккал",
+    "image": "images/photo_2026-08-28_17-23-25.jpg",
+    "description": "Belgiya vaflisi, ko'p miqdorda Nutella, yangi banan va qulupnay.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-vaffle-3",
+    "name": "Belgium Vaffle Nutella Fistashka",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "250 г",
+    "calories": "540 ккал",
+    "image": "images/photo_2026-08-28_17-23-26.jpg",
+    "description": "Belgiya vaflisi, Nutella va pista yong'og'i.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-vaffle-4",
+    "name": "Gangkong Vaffle Classic",
+    "category": "desserts",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "210 г",
+    "calories": "430 ккал",
+    "image": "images/photo_2026-08-28_17-23-30.jpg",
+    "description": "Pufakchali Gonkong vaflisi shokolad sousi bilan.",
+    "inStock": true,
+    "options": [
+      {
+        "name": "Nutella bilan",
+        "price": 10000
+      }
+    ]
+  },
+  {
+    "id": "prod-vaffle-5",
+    "name": "Gangkong Vaffle Nutella Fistashka",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "260 г",
+    "calories": "550 ккал",
+    "image": "images/photo_2026-08-28_17-23-32.jpg",
+    "description": "Gonkong pufak vaflisi, Nutella va pista yong'oqlari.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-vaffle-6",
+    "name": "Gangkong Vaffle Nutella Banan Qulupnay",
+    "category": "desserts",
+    "price": 65000,
+    "oldPrice": null,
+    "weight": "280 г",
+    "calories": "540 ккал",
+    "image": "images/photo_2026-08-28_17-23-33.jpg",
+    "description": "Gonkong vaflisi, Nutella, banan va qulupnay mevalari.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-1",
+    "name": "Turk Choyi",
+    "category": "drinks",
+    "price": 45000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "10 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Haqiqiy sharqona damlangan turk choyi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-2",
+    "name": "Meva & Rezavor Choy (Ягодный)",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "45 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Xushbo'y mevalar va o'rmon rezavorlari bilan damlangan choy.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-3",
+    "name": "Tinchlanturuvchi Choy (Успокаивающий)",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "15 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Moychechak, yalpiz va tabiiy tinchlantiruvchi giyohlar.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-4",
+    "name": "Marakanskiy Choy (Марокканский)",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "35 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Yalpiz, dolchin, badyan va apelsinli Marokash choyi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-5",
+    "name": "Sitrus Choy (Цитрусовый)",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "40 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Limon, laym, apelsin va greyfrut bo'laklari bilan.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-6",
+    "name": "Olmali Choy (Яблочный)",
+    "category": "drinks",
+    "price": 25000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "30 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Yangi olma va dolchin ifori bilan damlangan choy.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-7",
+    "name": "Limon Choy (Qora / Ko'k)",
+    "category": "drinks",
+    "price": 20000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "20 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Klassik limonli qora yoki ko'k choy.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-8",
+    "name": "Malinali Choy (Малиновый)",
+    "category": "drinks",
+    "price": 25000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "35 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Tabiiy malina murabbosi va mevali damlama.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-9",
+    "name": "Qulupnayli Choy (Клубничный)",
+    "category": "drinks",
+    "price": 25000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "35 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Qulupnay mevalari bilan xushbo'y choy.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-10",
+    "name": "Choy Qora / Ko'k (Чайник)",
+    "category": "drinks",
+    "price": 12000,
+    "oldPrice": null,
+    "weight": "Choynak / 800 мл",
+    "calories": "5 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "An'anaviy qora yoki ko'k choy.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-11",
+    "name": "Milksheyk Karamel",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "380 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Muzqaymoq, sut va karamel sousi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-12",
+    "name": "Milksheyk Banan",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "390 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Tabiiy banan mevasi va qaymoqli muzqaymoq.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-13",
+    "name": "Milksheyk Banan Shokolad",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "420 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Banan, shokolad va qaymoqli sutli kokteyl.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-14",
+    "name": "Milksheyk Banan Qulupnay",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "410 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Banan va qulupnayli yoqimli miks.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-15",
+    "name": "Milksheyk Rafaello",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "440 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Kokosli nozik Raffaello ta'mi va muzqaymoq.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-16",
+    "name": "Milksheyk Shokolad",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "410 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "To'yingan shokoladli sutli kokteyl.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-17",
+    "name": "Milksheyk Oreo",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "460 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Oreo pechenyesi bo'laklari bilan sutli kokteyl.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-18",
+    "name": "Milksheyk Baunty",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "430 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Kokos va shokolad uyg'unligidagi Baunty kokteyli.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-19",
+    "name": "Milksheyk Vanilniy Classic",
+    "category": "drinks",
+    "price": 30000,
+    "oldPrice": null,
+    "weight": "400 мл",
+    "calories": "370 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Klassik vanilli quyuq sutli kokteyl.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-20",
+    "name": "Mohito Yagodniy",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "140 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "O'rmon rezavorlari, laym, yalpiz va muz.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-21",
+    "name": "Mohito Flesh Myata",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "130 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Muzdek yangi yalpiz va laym bilan tetiklashtiruvchi moxito.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-22",
+    "name": "Mohito Ekzotika",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "150 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Ekzotik mevalar va muzdek gazlangan laym sharbati.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-23",
+    "name": "Mohito Mango Marakuya",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "160 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Mango, marakuya, laym va yalpiz.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-24",
+    "name": "Mohito Moxito 18+",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "150 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Maxsus firmenniy energetik moxito miksi.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-25",
+    "name": "Mohito Classic",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "120 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Klassik laym, yalpiz, shakar qiyomi va muz.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-26",
+    "name": "Mohito Qulupnayli",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "150 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Yangi qulupnay, laym va yalpizli muzdek moxito.",
+    "inStock": true,
+    "options": []
+  },
+  {
+    "id": "prod-drink-27",
+    "name": "Mohito Ocean (Blue Lagoon)",
+    "category": "drinks",
+    "price": 35000,
+    "oldPrice": null,
+    "weight": "450 мл",
+    "calories": "140 ккал",
+    "image": "images/photo_2026-08-28_17-25-33.jpg",
+    "description": "Moviy okean rangi, laym, yalpiz va sitrusli sharbat.",
+    "inStock": true,
+    "options": []
+  }
+]

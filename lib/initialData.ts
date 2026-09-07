@@ -1754,34 +1754,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   }
 ];
 
-export const INITIAL_REVIEWS: Review[] = [
-  {
-    id: 'rev-1',
-    author: 'Фаррух Каримов',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=farrukh',
-    rating: 5,
-    date: '2026-08-27',
-    text: 'Самые лучшие бургеры и чизкейк Сан-Себастьян в Термезе! Всё очень свежее и сочное.',
-    status: 'approved'
-  },
-  {
-    id: 'rev-2',
-    author: 'Шахноза Алиева',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=shahnoza',
-    rating: 5,
-    date: '2026-08-26',
-    text: 'Тандырный лаваш просто бомба! Доставка в Юбилейный приехала всего за 20 минут.',
-    status: 'approved'
-  },
-  {
-    id: 'rev-3',
-    author: 'Джамшид Рахимов',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=jamshid',
-    rating: 5,
-    date: '2026-08-25',
-    text: 'Пицца Чикаго и суши American Set – высший класс. Будем заказывать постоянно!',
-    status: 'approved'
-  }
-];
+export const INITIAL_REVIEWS: Review[] = [];
 
 export const INITIAL_ORDERS: Order[] = [];
+

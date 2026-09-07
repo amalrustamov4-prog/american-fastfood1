@@ -4,19 +4,11 @@ import React, { useState, useEffect } from 'react';
 import {
   Bike,
   CheckCircle2,
-  Clock,
   MapPin,
-  Navigation,
   Phone,
   Power,
-  TrendingUp,
-  DollarSign,
   Store,
-  User,
-  ArrowRight,
-  ShieldCheck,
-  AlertTriangle,
-  RotateCcw
+  ArrowRight
 } from 'lucide-react';
 import { Order } from '@/lib/types';
 import { apiClient } from '@/lib/api/client';
@@ -24,8 +16,8 @@ import { apiClient } from '@/lib/api/client';
 export default function CourierPage() {
   const [isOnShift, setIsOnShift] = useState(true);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [todayEarnings, setTodayEarnings] = useState(264000);
-  const [completedCount, setCompletedCount] = useState(11);
+  const [todayEarnings, setTodayEarnings] = useState(0);
+  const [completedCount, setCompletedCount] = useState(0);
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -64,7 +56,6 @@ export default function CourierPage() {
       try {
         await apiClient.updateOrderStatus(order.id, 'completed', 'paid');
         setActiveOrderId(null);
-        setTodayEarnings((prev) => prev + 22000);
         setCompletedCount((prev) => prev + 1);
         loadOrders();
       } catch (e) {
@@ -75,7 +66,7 @@ export default function CourierPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0F121C', color: '#fff' }}>
-      {/* Uzum Tezkor Partner Top Header */}
+      {/* Header */}
       <header
         style={{
           background: '#141724',
@@ -89,7 +80,7 @@ export default function CourierPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div
             style={{
-              background: 'linear-gradient(135deg, #7000FF 0%, #4C00B0 100%)',
+              background: 'linear-gradient(135deg, #FF5500 0%, #CC3300 100%)',
               padding: '6px 12px',
               borderRadius: '10px',
               fontWeight: 900,
@@ -97,11 +88,11 @@ export default function CourierPage() {
               letterSpacing: '0.5px'
             }}
           >
-            UZUM TEZKOR
+            AMERICAN
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: '15px' }}>AMERICAN Курьер #402</div>
-            <div style={{ fontSize: '11px', color: '#10B981' }}>● Смена активна (Ташкент, Центр)</div>
+            <div style={{ fontWeight: 800, fontSize: '15px' }}>Панель Курьера</div>
+            <div style={{ fontSize: '11px', color: '#10B981' }}>● {isOnShift ? 'Смена активна' : 'Оффлайн'}</div>
           </div>
         </div>
 
@@ -144,51 +135,43 @@ export default function CourierPage() {
 
       {/* Main Container */}
       <main style={{ maxWidth: '680px', margin: '0 auto', padding: '24px 16px' }}>
-        {/* Earnings Card */}
+        {/* Stats Card */}
         <div
           style={{
-            background: 'linear-gradient(135deg, #2A1054 0%, #181C2A 100%)',
-            border: '1px solid rgba(112, 0, 255, 0.4)',
+            background: 'linear-gradient(135deg, #1a2035 0%, #181C2A 100%)',
+            border: '1px solid rgba(255, 85, 0, 0.3)',
             borderRadius: '24px',
             padding: '24px',
             marginBottom: '24px',
-            boxShadow: '0 10px 30px rgba(112, 0, 255, 0.2)'
+            boxShadow: '0 10px 30px rgba(255, 85, 0, 0.1)'
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '13px', color: '#A78BFA', fontWeight: 600 }}>
-              Заработок за сегодня
-            </span>
-            <span
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '16px' }}>
+            Статистика смены
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            <div
               style={{
-                background: 'rgba(16, 185, 129, 0.2)',
-                color: '#34D399',
-                padding: '4px 10px',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: 800
+                background: 'rgba(255,255,255,0.04)',
+                borderRadius: '14px',
+                padding: '14px'
               }}
             >
-              +15% Час Пик 🔥
-            </span>
-          </div>
-
-          <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginBottom: '16px' }}>
-            {todayEarnings.toLocaleString('ru-RU')} сум
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div>
-              <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Доставок</div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#fff' }}>{completedCount}</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginBottom: '4px' }}>Доставок выполнено</div>
+              <div style={{ fontSize: '24px', fontWeight: 900, color: '#fff' }}>{completedCount}</div>
             </div>
-            <div>
-              <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Рейтинг курьера</div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#FFB800' }}>4.98 ⭐</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Чаевые</div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#10B981' }}>34 000 сум</div>
+            <div
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                borderRadius: '14px',
+                padding: '14px'
+              }}
+            >
+              <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginBottom: '4px' }}>Активных заказов</div>
+              <div style={{ fontSize: '24px', fontWeight: 900, color: '#FF5500' }}>
+                {orders.filter((o) => o.status === 'delivering').length}
+              </div>
             </div>
           </div>
         </div>
@@ -259,8 +242,8 @@ export default function CourierPage() {
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '16px', fontWeight: 900, color: '#10B981' }}>
-                      + 22 000 сум
+                    <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                      {ord.items.length} позиций · {ord.total.toLocaleString('ru-RU')} сум
                     </div>
                   </div>
 
@@ -306,7 +289,7 @@ export default function CourierPage() {
                       fontSize: '15px'
                     }}
                   >
-                    <span>Принять заказ (+ 22 000 сум)</span>
+                    <span>Принять заказ</span>
                     <ArrowRight size={18} />
                   </button>
                 </div>
@@ -376,8 +359,8 @@ function ActiveOrderCard({ order, onFinish }: { order: Order; onFinish: () => vo
           </h2>
         </div>
 
-        <div style={{ fontSize: '18px', fontWeight: 900, color: '#10B981' }}>
-          + 22 000 сум
+        <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+          {order.items.length} позиций
         </div>
       </div>
 

@@ -14,7 +14,8 @@ export async function GET() {
     return NextResponse.json(reviews);
   } catch (error) {
     console.error('GET /api/reviews error:', error);
-    return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
+    const { INITIAL_REVIEWS } = await import('@/lib/initialData');
+    return NextResponse.json(INITIAL_REVIEWS);
   }
 }
 

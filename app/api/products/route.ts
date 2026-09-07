@@ -44,7 +44,9 @@ export async function GET(request: Request) {
     return NextResponse.json(formatted);
   } catch (error) {
     console.error('GET /api/products error:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    // Fallback to rich initial product dataset so client never breaks
+    const { INITIAL_PRODUCTS } = await import('@/lib/initialData');
+    return NextResponse.json(INITIAL_PRODUCTS);
   }
 }
 

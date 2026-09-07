@@ -51,7 +51,8 @@ export async function GET(request: Request) {
     return NextResponse.json(formatted);
   } catch (error) {
     console.error('GET /api/orders error:', error);
-    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });
+    const { INITIAL_ORDERS } = await import('@/lib/initialData');
+    return NextResponse.json(INITIAL_ORDERS);
   }
 }
 

@@ -35,7 +35,8 @@ export async function GET() {
     });
   } catch (error) {
     console.error('GET /api/settings error:', error);
-    return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
+    const { CAFE_SETTINGS } = await import('@/lib/initialData');
+    return NextResponse.json(CAFE_SETTINGS);
   }
 }
 

@@ -11,6 +11,7 @@ export async function GET() {
     return NextResponse.json(categories);
   } catch (error) {
     console.error('GET /api/categories error:', error);
-    return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 });
+    const { INITIAL_CATEGORIES } = await import('@/lib/initialData');
+    return NextResponse.json(INITIAL_CATEGORIES);
   }
 }

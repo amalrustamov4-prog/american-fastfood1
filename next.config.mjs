@@ -3,6 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     unoptimized: true
+  },
+  experimental: {
+    outputFileTracingIncludes: {
+      '/api/**/*': ['./prisma/**/*', './prisma/dev.db']
+    }
   }
 };
 

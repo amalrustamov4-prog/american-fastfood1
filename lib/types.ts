@@ -94,4 +94,8 @@ export interface CafeSettings {
   freeDeliveryThreshold: number;
   address: string;
   currency: string;
+  bannerText?: string;
+  isOpen?: boolean;
+  minOrderAmount?: number;
+  cafeName?: string;
 }

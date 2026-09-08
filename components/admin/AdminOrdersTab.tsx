@@ -34,7 +34,7 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
   couriers = []
 }) => {
   const [receiptOrder, setReceiptOrder] = useState<Order | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('active');
   const [loading, setLoading] = useState(false);
   const [assignModalOrder, setAssignModalOrder] = useState<Order | null>(null);
   const [selectedCourierId, setSelectedCourierId] = useState<string>('');
@@ -49,6 +49,10 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
   ) => {
     try {
       await apiClient.updateOrderStatus(orderId, newStatus, paymentStatus, courierInfo);
+      // If user was on 'new' filter, keep order visible by switching to active
+      if (filterStatus === 'new') {
+        setFilterStatus('active');
+      }
       onRefresh();
     } catch (err: any) {
       alert(err.message || 'Не удалось обновить статус');
@@ -56,11 +60,16 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
   };
 
   const handleTransferToCourier = (order: Order) => {
-    setAssignModalOrder(order);
     if (activeCouriers.length > 0) {
-      // Pick first free courier by default if available
+      setAssignModalOrder(order);
       const free = activeCouriers.find((c) => c.status === 'free');
       setSelectedCourierId(free ? free.id : activeCouriers[0].id);
+    } else {
+      // Auto assign so courier panel immediately receives it without blocking
+      handleStatusChange(order.id, 'delivering', undefined, {
+        courierName: 'Курьер AMERICAN (Термез)',
+        courierPhone: cafeSettings?.phone || '+998 90 822 01 01'
+      });
     }
   };
 
@@ -69,14 +78,15 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
     const courier = activeCouriers.find((c) => c.id === selectedCourierId);
     await handleStatusChange(assignModalOrder.id, 'delivering', undefined, {
       courierId: courier?.id,
-      courierName: courier ? `${courier.lastName} ${courier.firstName}` : 'Kuryer',
-      courierPhone: courier?.phone
+      courierName: courier ? `${courier.lastName} ${courier.firstName}` : 'Курьер AMERICAN',
+      courierPhone: courier?.phone || cafeSettings?.phone
     });
     setAssignModalOrder(null);
   };
 
   const filteredOrders = orders.filter((o) => {
     if (filterStatus === 'all') return true;
+    if (filterStatus === 'active') return o.status === 'new' || o.status === 'cooking' || o.status === 'delivering';
     return o.status === filterStatus;
   });
 
@@ -108,14 +118,16 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
             onChange={(e) => setFilterStatus(e.target.value)}
             style={{
               background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
+              border: '1.5px solid #FF5500',
               color: '#fff',
               padding: '10px 16px',
               borderRadius: '12px',
               fontSize: '14px',
+              fontWeight: 700,
               cursor: 'pointer'
             }}
           >
+            <option value="active">⚡ В работе (Активные: {orders.filter((o) => o.status !== 'completed' && o.status !== 'cancelled').length})</option>
             <option value="all">Все статусы ({orders.length})</option>
             <option value="new">⏳ Новые ({orders.filter((o) => o.status === 'new').length})</option>
             <option value="cooking">🔥 Готовятся ({orders.filter((o) => o.status === 'cooking').length})</option>
@@ -399,22 +411,114 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
                 <div
                   style={{
                     display: 'flex',
+                    flexDirection: 'column',
                     gap: '10px',
-                    paddingTop: '6px',
-                    borderTop: '1px solid rgba(255,255,255,0.05)',
-                    flexWrap: 'wrap'
+                    paddingTop: '10px',
+                    borderTop: '1px solid rgba(255,255,255,0.08)'
                   }}
                 >
-                  {/* Step 1: When order is NEW -> Accept & Cook button */}
-                  {isNew && (
-                    <>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    {/* Step 1: When order is NEW -> Accept & Cook button */}
+                    {isNew && (
+                      <>
+                        <button
+                          onClick={() => handleStatusChange(order.id, 'cooking')}
+                          style={{
+                            background: 'linear-gradient(135deg, #FF5500 0%, #CC2200 100%)',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '12px 22px',
+                            borderRadius: '12px',
+                            fontSize: '14px',
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 14px rgba(255, 85, 0, 0.4)'
+                          }}
+                        >
+                          <Flame size={17} />
+                          <span>🔥 Принять заказ (Готовится на кухне)</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleStatusChange(order.id, 'cancelled')}
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.15)',
+                            color: '#EF4444',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            padding: '10px 16px',
+                            borderRadius: '12px',
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <Ban size={15} />
+                          <span>Отклонить (Фейк)</span>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Step 2: When COOKING -> Dedicated "Передано курьеру" button! */}
+                    {isCooking && (
+                      <>
+                        <button
+                          onClick={() => handleTransferToCourier(order)}
+                          style={{
+                            background: 'linear-gradient(135deg, #FFCC00 0%, #FFAA00 100%)',
+                            color: '#000',
+                            border: 'none',
+                            padding: '12px 24px',
+                            borderRadius: '12px',
+                            fontSize: '14px',
+                            fontWeight: 900,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 16px rgba(255, 204, 0, 0.4)'
+                          }}
+                        >
+                          <Truck size={18} color="#000" />
+                          <span>🚗 ПЕРЕДАНО КУРЬЕРУ (В путь)</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
+                          style={{
+                            background: 'rgba(16, 185, 129, 0.15)',
+                            border: '1px solid rgba(16, 185, 129, 0.4)',
+                            color: '#10B981',
+                            padding: '10px 18px',
+                            borderRadius: '12px',
+                            fontSize: '13px',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                          }}
+                        >
+                          <CheckCircle size={15} />
+                          <span>Выдан клиенту (Самовывоз)</span>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Step 3: When DELIVERING -> Complete order button */}
+                    {isDelivering && (
                       <button
-                        onClick={() => handleStatusChange(order.id, 'cooking')}
+                        onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
                         style={{
-                          background: 'linear-gradient(135deg, #FF5500 0%, #CC2200 100%)',
+                          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
                           color: '#fff',
                           border: 'none',
-                          padding: '10px 20px',
+                          padding: '12px 24px',
                           borderRadius: '12px',
                           fontSize: '14px',
                           fontWeight: 800,
@@ -422,81 +526,49 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
                           alignItems: 'center',
                           gap: '8px',
                           cursor: 'pointer',
-                          boxShadow: '0 4px 14px rgba(255, 85, 0, 0.4)'
+                          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)'
                         }}
                       >
-                        <Flame size={16} />
-                        <span>🔥 Принять заказ (Готовится)</span>
+                        <CheckCircle size={17} />
+                        <span>✅ Доставлено клиенту (Завершить заказ)</span>
                       </button>
+                    )}
+                  </div>
 
-                      <button
-                        onClick={() => handleStatusChange(order.id, 'cancelled')}
-                        style={{
-                          background: 'rgba(239, 68, 68, 0.15)',
-                          color: '#EF4444',
-                          border: '1px solid rgba(239, 68, 68, 0.3)',
-                          padding: '10px 16px',
-                          borderRadius: '12px',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <Ban size={15} />
-                        <span>Отклонить (Фейк)</span>
-                      </button>
-                    </>
-                  )}
-
-                  {/* Step 2: When COOKING -> Dedicated "Передано курьеру" button! */}
-                  {isCooking && (
+                  {/* Manual Quick Status Chips for instant control */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                    <span style={{ fontSize: '11px', color: 'var(--text-dim)', marginRight: '4px' }}>
+                      Сменить этап вручную:
+                    </span>
                     <button
+                      type="button"
+                      onClick={() => handleStatusChange(order.id, 'new')}
+                      style={{ background: order.status === 'new' ? 'rgba(255,204,0,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#FFCC00', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      ⏳ Новый
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleStatusChange(order.id, 'cooking')}
+                      style={{ background: order.status === 'cooking' ? 'rgba(255,85,0,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#FF7722', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      🔥 Готовится
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => handleTransferToCourier(order)}
-                      style={{
-                        background: '#FFCC00',
-                        color: '#000',
-                        border: 'none',
-                        padding: '12px 24px',
-                        borderRadius: '12px',
-                        fontSize: '14px',
-                        fontWeight: 900,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 16px rgba(255, 204, 0, 0.4)'
-                      }}
+                      style={{ background: order.status === 'delivering' ? 'rgba(96,165,250,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#60A5FA', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
                     >
-                      <Truck size={17} color="#000" />
-                      <span>🚗 ПЕРЕДАНО КУРЬЕРУ (Выдать заказ)</span>
+                      🚗 У курьера
                     </button>
-                  )}
-
-                  {/* Step 3: When DELIVERING -> Complete order button */}
-                  {isDelivering && (
                     <button
+                      type="button"
                       onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
-                      style={{
-                        background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '10px 20px',
-                        borderRadius: '12px',
-                        fontSize: '14px',
-                        fontWeight: 800,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        cursor: 'pointer'
-                      }}
+                      style={{ background: order.status === 'completed' ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#10B981', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
                     >
-                      <CheckCircle size={16} />
-                      <span>✅ Доставлено клиенту (Завершить)</span>
+                      ✅ Доставлен
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             );

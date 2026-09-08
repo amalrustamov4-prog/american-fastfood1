@@ -67,8 +67,8 @@ export async function POST(request: Request) {
     // Default coords in city center with slight random offset for map visualization
     const randomOffsetLat = (Math.random() - 0.5) * 0.04;
     const randomOffsetLng = (Math.random() - 0.5) * 0.04;
-    const baseLat = 39.6542 + randomOffsetLat;
-    const baseLng = 66.9597 + randomOffsetLng;
+    const baseLat = 37.2285 + randomOffsetLat;
+    const baseLng = 67.2783 + randomOffsetLng;
 
     const created = await prisma.employee.create({
       data: {

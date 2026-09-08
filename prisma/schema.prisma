@@ -100,8 +100,8 @@ model Employee {
   notes                 String?
   status                String   @default("free") // free (Bo'sh), on_order (Buyurtmada), busy (Band), no_gps (GPS yo'q)
   hasGps                Boolean  @default(true)
-  lat                   Float    @default(39.6542)
-  lng                   Float    @default(66.9597)
+  lat                   Float    @default(37.2285)
+  lng                   Float    @default(67.2783)
   balance               Float    @default(0)
   vehiclePlate          String?
   vehicleModel          String?

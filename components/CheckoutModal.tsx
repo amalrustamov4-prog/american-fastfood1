@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, MapPin, Truck, Store, CreditCard, Banknote, ShieldCheck, ArrowRight } from 'lucide-react';
+import { X, MapPin, Truck, Store, CreditCard, Banknote, ShieldCheck, ArrowRight, Navigation } from 'lucide-react';
 import { CafeSettings, CartItem, Order, PaymentMethod } from '@/lib/types';
 
 interface CheckoutModalProps {
@@ -244,16 +244,53 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {/* Address for delivery */}
           {deliveryType === 'delivery' ? (
             <div style={{ marginBottom: '14px' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px' }}>
-                Адрес доставки (улица, дом, квартира/ориентир) *
-              </label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>
+                  Адрес доставки (Термез: улица, дом, ориентир) *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+                      navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                          const lat = pos.coords.latitude.toFixed(5);
+                          const lng = pos.coords.longitude.toFixed(5);
+                          setAddress(`г. Термез (GPS: ${lat}, ${lng})`);
+                        },
+                        () => {
+                          setAddress('г. Термез, район Юбилейный');
+                        }
+                      );
+                    } else {
+                      setAddress('г. Термез, район Юбилейный');
+                    }
+                  }}
+                  style={{
+                    background: 'rgba(255, 85, 0, 0.15)',
+                    border: '1px solid rgba(255, 85, 0, 0.4)',
+                    color: '#FF7722',
+                    borderRadius: '8px',
+                    padding: '2px 8px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <Navigation size={12} />
+                  <span>Мой GPS (Термез)</span>
+                </button>
+              </div>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <MapPin size={16} color="var(--primary)" style={{ position: 'absolute', left: '12px' }} />
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="ул. Амира Темура, 45, кв 12"
+                  placeholder="г. Термез, ул. Ат-Термизий, д. 24"
                   required
                   style={{
                     width: '100%',

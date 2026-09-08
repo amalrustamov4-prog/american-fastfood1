@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShoppingBag, Sparkles, Phone, Clock } from 'lucide-react';
+import { ShoppingBag, Sparkles, Phone, Clock, Bike } from 'lucide-react';
 import { Logo } from './Logo';
 import { CafeSettings } from '@/lib/types';
 
@@ -41,8 +41,13 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
           </li>
           <li>
+            <a href="/courier" className="nav-link" style={{ color: '#C084FC', fontWeight: 800 }}>
+              🛵 Курьер (GPS)
+            </a>
+          </li>
+          <li>
             <a href="#delivery" className="nav-link">
-              📍 Доставка & Локация
+              📍 Термез
             </a>
           </li>
           <li>
@@ -53,7 +58,27 @@ export const Header: React.FC<HeaderProps> = ({
         </ul>
 
         {/* Header Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Courier Direct Link */}
+          <a
+            href="/courier"
+            style={{
+              background: 'linear-gradient(135deg, rgba(112, 0, 255, 0.25) 0%, rgba(112, 0, 255, 0.1) 100%)',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              color: '#D8B4FE',
+              padding: '8px 14px',
+              borderRadius: '9999px',
+              fontWeight: 800,
+              fontSize: '13px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              textDecoration: 'none'
+            }}
+          >
+            <Bike size={15} color="#C084FC" />
+            <span>Курьер</span>
+          </a>
           {/* Quick Presentation Button */}
           <button
             onClick={onOpenPresentation}

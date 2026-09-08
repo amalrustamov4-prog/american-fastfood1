@@ -66,9 +66,9 @@ export const AdminFleetMapTab: React.FC<AdminFleetMapTabProps> = ({
         document.head.appendChild(link);
       }
 
-      // Default center: Samarkand (matching Screenshot 4 coordinates 39.6542, 66.9597)
+      // Default center: Termez, Surkhandarya region (coordinates 37.2285, 67.2783)
       const map = L.map(mapContainerRef.current, {
-        center: [39.6542, 66.9597],
+        center: [37.2285, 67.2783],
         zoom: 13,
         zoomControl: false,
         attributionControl: false
@@ -83,7 +83,7 @@ export const AdminFleetMapTab: React.FC<AdminFleetMapTabProps> = ({
       // Custom Zoom control at left top
       L.control.zoom({ position: 'topleft' }).addTo(map);
 
-      // Restaurant marker (AMERICAN Fast Food)
+      // Restaurant marker (AMERICAN Fast Food - Termez)
       const cafeIcon = L.divIcon({
         className: 'custom-cafe-icon',
         html: `
@@ -109,11 +109,11 @@ export const AdminFleetMapTab: React.FC<AdminFleetMapTabProps> = ({
         iconAnchor: [18, 18]
       });
 
-      const cafeMarker = L.marker([39.6542, 66.9597], { icon: cafeIcon }).addTo(map);
+      const cafeMarker = L.marker([37.2285, 67.2783], { icon: cafeIcon }).addTo(map);
       cafeMarker.bindPopup(`
         <div style="color: #000; padding: 4px;">
           <strong style="font-size: 14px;">Кафе AMERICAN (База)</strong>
-          <div style="font-size: 12px; color: #555; margin-top: 2px;">ул. Амира Темура, 45</div>
+          <div style="font-size: 12px; color: #555; margin-top: 2px;">г. Термез, Сурхандарья (Юбилейный)</div>
         </div>
       `);
 
@@ -674,7 +674,7 @@ export const AdminFleetMapTab: React.FC<AdminFleetMapTabProps> = ({
               }}
             >
               <Store size={15} color="#FF5500" />
-              <span>Кафе AMERICAN: Самарканд</span>
+              <span>Кафе AMERICAN: г. Термез (Сурхандарья)</span>
             </div>
           </div>
 

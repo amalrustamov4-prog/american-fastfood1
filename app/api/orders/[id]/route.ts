@@ -24,12 +24,45 @@ export async function PATCH(
     if (paymentStatus) {
       data.paymentStatus = paymentStatus;
     }
+    if (body.courierId) {
+      data.courierId = body.courierId;
+    }
+    if (body.courierName) {
+      data.courierName = body.courierName;
+    }
+    if (body.courierPhone) {
+      data.courierPhone = body.courierPhone;
+    }
 
     const updated = await prisma.order.update({
       where: { id },
       data,
       include: { items: true }
     });
+
+    // If courier was assigned and delivering, update courier status
+    if (body.courierId && status === 'delivering') {
+      try {
+        await prisma.employee.update({
+          where: { id: body.courierId },
+          data: { status: 'on_order' }
+        });
+      } catch (e) {
+        // ignore if courier not in employee table
+      }
+    } else if (status === 'completed' && updated.courierId) {
+      try {
+        await prisma.employee.update({
+          where: { id: updated.courierId },
+          data: {
+            status: 'free',
+            completedOrdersCount: { increment: 1 }
+          }
+        });
+      } catch (e) {
+        // ignore
+      }
+    }
 
     return NextResponse.json({
       id: updated.id,
@@ -47,6 +80,9 @@ export async function PATCH(
       deliveryFee: updated.deliveryFee,
       total: updated.total,
       comment: updated.comment,
+      courierId: updated.courierId,
+      courierName: updated.courierName,
+      courierPhone: updated.courierPhone,
       createdAt: updated.createdAt.toISOString(),
       items: updated.items.map((i) => ({
         id: i.productId || i.id,

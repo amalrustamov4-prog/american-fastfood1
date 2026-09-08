@@ -38,6 +38,9 @@ export async function GET(request: Request) {
       deliveryFee: o.deliveryFee,
       total: o.total,
       comment: o.comment || '',
+      courierId: o.courierId,
+      courierName: o.courierName,
+      courierPhone: o.courierPhone,
       createdAt: o.createdAt.toISOString(),
       items: o.items.map((i) => ({
         id: i.productId || i.id,
@@ -165,7 +168,7 @@ export async function POST(request: Request) {
         deliveryType,
         paymentMethod,
         paymentStatus: paymentMethod === 'cash' ? 'cash_on_delivery' : 'pending',
-        status: 'cooking',
+        status: 'new',
         itemsTotal: calculatedItemsTotal,
         discountAmount,
         promoCode: promoCode || null,

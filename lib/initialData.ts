@@ -1409,7 +1409,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "10 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_turkish.jpg",
     "description": "Haqiqiy sharqona damlangan turk choyi.",
     "inStock": true,
     "options": []
@@ -1422,7 +1422,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "45 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_berry.jpg",
     "description": "Xushbo'y mevalar va o'rmon rezavorlari bilan damlangan choy.",
     "inStock": true,
     "options": []
@@ -1435,7 +1435,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "15 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_relax.jpg",
     "description": "Moychechak, yalpiz va tabiiy tinchlantiruvchi giyohlar.",
     "inStock": true,
     "options": []
@@ -1448,7 +1448,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "35 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_moroccan.jpg",
     "description": "Yalpiz, dolchin, badyan va apelsinli Marokash choyi.",
     "inStock": true,
     "options": []
@@ -1461,7 +1461,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "40 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_citrus.jpg",
     "description": "Limon, laym, apelsin va greyfrut bo'laklari bilan.",
     "inStock": true,
     "options": []
@@ -1474,7 +1474,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "30 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_apple.jpg",
     "description": "Yangi olma va dolchin ifori bilan damlangan choy.",
     "inStock": true,
     "options": []
@@ -1487,7 +1487,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "20 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_lemon.jpg",
     "description": "Klassik limonli qora yoki ko'k choy.",
     "inStock": true,
     "options": []
@@ -1500,7 +1500,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "35 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_raspberry.jpg",
     "description": "Tabiiy malina murabbosi va mevali damlama.",
     "inStock": true,
     "options": []
@@ -1513,7 +1513,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "35 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_berry.jpg",
     "description": "Qulupnay mevalari bilan xushbo'y choy.",
     "inStock": true,
     "options": []
@@ -1526,7 +1526,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "Choynak / 800 мл",
     "calories": "5 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_tea_turkish.jpg",
     "description": "An'anaviy qora yoki ko'k choy.",
     "inStock": true,
     "options": []
@@ -1539,7 +1539,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "380 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_caramel.jpg",
     "description": "Muzqaymoq, sut va karamel sousi.",
     "inStock": true,
     "options": []
@@ -1552,7 +1552,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "390 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_banana.jpg",
     "description": "Tabiiy banan mevasi va qaymoqli muzqaymoq.",
     "inStock": true,
     "options": []
@@ -1565,7 +1565,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "420 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_chocolate.jpg",
     "description": "Banan, shokolad va qaymoqli sutli kokteyl.",
     "inStock": true,
     "options": []
@@ -1578,7 +1578,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "410 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_strawberry.jpg",
     "description": "Banan va qulupnayli yoqimli miks.",
     "inStock": true,
     "options": []
@@ -1591,7 +1591,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "440 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_raffaello.jpg",
     "description": "Kokosli nozik Raffaello ta'mi va muzqaymoq.",
     "inStock": true,
     "options": []
@@ -1604,7 +1604,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "410 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_chocolate.jpg",
     "description": "To'yingan shokoladli sutli kokteyl.",
     "inStock": true,
     "options": []
@@ -1617,7 +1617,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "460 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_oreo.jpg",
     "description": "Oreo pechenyesi bo'laklari bilan sutli kokteyl.",
     "inStock": true,
     "options": []
@@ -1630,7 +1630,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "430 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_bounty.jpg",
     "description": "Kokos va shokolad uyg'unligidagi Baunty kokteyli.",
     "inStock": true,
     "options": []
@@ -1643,7 +1643,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "400 мл",
     "calories": "370 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_milkshake_vanilla.jpg",
     "description": "Klassik vanilli quyuq sutli kokteyl.",
     "inStock": true,
     "options": []
@@ -1656,7 +1656,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "140 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_berries.jpg",
     "description": "O'rmon rezavorlari, laym, yalpiz va muz.",
     "inStock": true,
     "options": []
@@ -1669,7 +1669,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "130 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_classic.jpg",
     "description": "Muzdek yangi yalpiz va laym bilan tetiklashtiruvchi moxito.",
     "inStock": true,
     "options": []
@@ -1682,7 +1682,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "150 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_exotic.jpg",
     "description": "Ekzotik mevalar va muzdek gazlangan laym sharbati.",
     "inStock": true,
     "options": []
@@ -1695,7 +1695,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "160 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_mango.jpg",
     "description": "Mango, marakuya, laym va yalpiz.",
     "inStock": true,
     "options": []
@@ -1708,7 +1708,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "150 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_blue_ocean.jpg",
     "description": "Maxsus firmenniy energetik moxito miksi.",
     "inStock": true,
     "options": []
@@ -1721,7 +1721,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "120 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_classic.jpg",
     "description": "Klassik laym, yalpiz, shakar qiyomi va muz.",
     "inStock": true,
     "options": []
@@ -1734,7 +1734,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "150 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_strawberry.jpg",
     "description": "Yangi qulupnay, laym va yalpizli muzdek moxito.",
     "inStock": true,
     "options": []
@@ -1747,7 +1747,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     "oldPrice": null,
     "weight": "450 мл",
     "calories": "140 ккал",
-    "image": "/images/photo_2026-08-28_17-25-33.jpg",
+    "image": "/images/drink_mojito_blue_ocean.jpg",
     "description": "Moviy okean rangi, laym, yalpiz va sitrusli sharbat.",
     "inStock": true,
     "options": []

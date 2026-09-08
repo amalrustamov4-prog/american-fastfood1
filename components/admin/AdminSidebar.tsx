@@ -1,12 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Utensils, ShoppingBag, Star, Settings, ArrowLeft, LogOut } from 'lucide-react';
+import { Utensils, ShoppingBag, Star, Settings, ArrowLeft, LogOut, MapPin, Users } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 
+export type AdminTabType = 'orders' | 'fleet_map' | 'performers' | 'menu' | 'reviews' | 'settings';
+
 interface AdminSidebarProps {
-  activeTab: 'menu' | 'orders' | 'reviews' | 'settings';
-  setActiveTab: (tab: 'menu' | 'orders' | 'reviews' | 'settings') => void;
+  activeTab: AdminTabType;
+  setActiveTab: (tab: AdminTabType) => void;
   activeOrdersCount: number;
   onLogout: () => void;
 }
@@ -17,9 +19,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   activeOrdersCount,
   onLogout
 }) => {
-  const tabs = [
+  const tabs: Array<{ id: AdminTabType; name: string; icon: React.ReactNode; count?: number; badgeColor?: string }> = [
+    { id: 'orders', name: 'Заказы клиентов', icon: <ShoppingBag size={18} />, count: activeOrdersCount, badgeColor: '#FFCC00' },
+    { id: 'fleet_map', name: 'Xarita (Fleet GPS)', icon: <MapPin size={18} /> },
+    { id: 'performers', name: 'Bajaruvchilar & Xodimlar', icon: <Users size={18} /> },
     { id: 'menu', name: 'Редактор Меню', icon: <Utensils size={18} /> },
-    { id: 'orders', name: 'Заказы клиентов', icon: <ShoppingBag size={18} />, count: activeOrdersCount },
     { id: 'reviews', name: 'Отзывы гостей', icon: <Star size={18} /> },
     { id: 'settings', name: 'Настройки заведения', icon: <Settings size={18} /> }
   ];
@@ -27,7 +31,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   return (
     <aside
       style={{
-        width: '260px',
+        width: '270px',
         background: '#10131E',
         borderRight: '1px solid var(--border)',
         display: 'flex',
@@ -46,20 +50,22 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '12px 16px',
                 borderRadius: '12px',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: 700,
                 background: isActive ? 'var(--primary-gradient)' : 'none',
                 color: isActive ? '#fff' : 'var(--text-muted)',
                 boxShadow: isActive ? '0 4px 15px rgba(255, 85, 0, 0.35)' : 'none',
                 transition: 'all 0.2s',
-                textAlign: 'left'
+                textAlign: 'left',
+                border: 'none',
+                cursor: 'pointer'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -69,8 +75,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               {tab.count !== undefined && tab.count > 0 && (
                 <span
                   style={{
-                    background: isActive ? '#fff' : 'var(--primary)',
-                    color: isActive ? 'var(--primary)' : '#fff',
+                    background: isActive ? '#fff' : (tab.badgeColor || 'var(--primary)'),
+                    color: isActive ? 'var(--primary)' : '#000',
                     fontSize: '11px',
                     fontWeight: 900,
                     padding: '2px 8px',
@@ -115,7 +121,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             fontWeight: 700,
             padding: '10px 14px',
             borderRadius: '10px',
-            background: 'rgba(239, 68, 68, 0.1)'
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: 'none',
+            cursor: 'pointer'
           }}
         >
           <LogOut size={16} />

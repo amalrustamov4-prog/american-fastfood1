@@ -60,6 +60,9 @@ model Order {
   deliveryFee    Float       @default(0)
   total          Float
   comment        String?
+  courierId      String?
+  courierName    String?
+  courierPhone   String?
   createdAt      DateTime    @default(now())
   items          OrderItem[]
 }
@@ -73,6 +76,39 @@ model OrderItem {
   price       Float
   quantity    Int
   optionsJson String? @default("[]")
+}
+
+model Employee {
+  id                    String   @id @default(cuid())
+  role                  String   @default("kuryer") // kuryer, ofitsiant, povar, povar_yordamchisi, ish_boshqaruvchi, taksi
+  courierType           String?  @default("piyoda") // piyoda, avto, moto, yuk
+  lastName              String
+  firstName             String
+  middleName            String?
+  phone                 String   @unique
+  birthDate             String?
+  workCondition         String?  @default("1.4% (Standart)")
+  drivingExperienceDate String?
+  licenseNumber         String?
+  licenseCountry        String?  @default("Uzbekistan")
+  licenseIssueDate      String?
+  licenseExpiryDate     String?
+  address               String?
+  jshshir               String?
+  trafficSource         String?  @default("Organik trafik")
+  hearingImpaired       Boolean  @default(false)
+  notes                 String?
+  status                String   @default("free") // free (Bo'sh), on_order (Buyurtmada), busy (Band), no_gps (GPS yo'q)
+  hasGps                Boolean  @default(true)
+  lat                   Float    @default(39.6542)
+  lng                   Float    @default(66.9597)
+  balance               Float    @default(0)
+  vehiclePlate          String?
+  vehicleModel          String?
+  rating                Float    @default(5.0)
+  completedOrdersCount  Int      @default(0)
+  avatar                String?
+  createdAt             DateTime @default(now())
 }
 
 model Review {
@@ -107,3 +143,4 @@ model PromoCode {
   minOrder        Float   @default(0)
   isActive        Boolean @default(true)
 }
+

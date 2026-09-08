@@ -119,15 +119,66 @@ export const apiClient = {
     return data;
   },
 
-  async updateOrderStatus(orderId: string, status: OrderStatus, paymentStatus?: string): Promise<Order> {
+  async updateOrderStatus(
+    orderId: string,
+    status: OrderStatus,
+    paymentStatus?: string,
+    courierInfo?: { courierId?: string; courierName?: string; courierPhone?: string }
+  ): Promise<Order> {
     const res = await fetch(`/api/orders/${orderId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status, paymentStatus })
+      body: JSON.stringify({
+        status,
+        paymentStatus,
+        courierId: courierInfo?.courierId,
+        courierName: courierInfo?.courierName,
+        courierPhone: courierInfo?.courierPhone
+      })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Ошибка обновления статуса');
     return data;
+  },
+
+  // --- EMPLOYEES & PERFORMERS ---
+  async getEmployees(role?: string, status?: string): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (role && role !== 'all') params.set('role', role);
+    if (status && status !== 'all') params.set('status', status);
+
+    const url = `/api/employees${params.toString() ? `?${params.toString()}` : ''}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Не удалось загрузить список исполнителей');
+    return res.json();
+  },
+
+  async createEmployee(data: any): Promise<any> {
+    const res = await fetch('/api/employees', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const resData = await res.json();
+    if (!res.ok) throw new Error(resData.error || 'Не удалось сохранить исполнителя');
+    return resData;
+  },
+
+  async updateEmployee(id: string, data: any): Promise<any> {
+    const res = await fetch(`/api/employees/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const resData = await res.json();
+    if (!res.ok) throw new Error(resData.error || 'Не удалось обновить исполнителя');
+    return resData;
+  },
+
+  async deleteEmployee(id: string): Promise<any> {
+    const res = await fetch(`/api/employees/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Не удалось удалить исполнителя');
+    return res.json();
   },
 
   // --- REVIEWS ---
@@ -146,6 +197,15 @@ export const apiClient = {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Ошибка добавления отзыва');
     return data;
+  },
+
+  async updateReviewStatus(id: string, status: 'approved' | 'rejected'): Promise<any> {
+    const res = await fetch(`/api/reviews?id=${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    return res.json();
   },
 
   async deleteReview(id: string): Promise<any> {
@@ -181,3 +241,4 @@ export const apiClient = {
     return data;
   }
 };
+

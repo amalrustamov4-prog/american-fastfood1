@@ -63,6 +63,46 @@ export interface Order {
   deliveryFee: number;
   total: number;
   comment?: string;
+  courierId?: string;
+  courierName?: string;
+  courierPhone?: string;
+}
+
+export type EmployeeRole = 'kuryer' | 'ofitsiant' | 'povar' | 'povar_yordamchisi' | 'ish_boshqaruvchi' | 'taksi';
+export type CourierType = 'piyoda' | 'avto' | 'moto' | 'yuk';
+export type PerformerStatus = 'free' | 'on_order' | 'busy' | 'no_gps';
+
+export interface Employee {
+  id: string;
+  role: EmployeeRole;
+  courierType?: CourierType | null;
+  lastName: string;
+  firstName: string;
+  middleName?: string | null;
+  phone: string;
+  birthDate?: string | null;
+  workCondition?: string | null;
+  drivingExperienceDate?: string | null;
+  licenseNumber?: string | null;
+  licenseCountry?: string | null;
+  licenseIssueDate?: string | null;
+  licenseExpiryDate?: string | null;
+  address?: string | null;
+  jshshir?: string | null;
+  trafficSource?: string | null;
+  hearingImpaired?: boolean;
+  notes?: string | null;
+  status: PerformerStatus;
+  hasGps: boolean;
+  lat: number;
+  lng: number;
+  balance: number;
+  vehiclePlate?: string | null;
+  vehicleModel?: string | null;
+  rating: number;
+  completedOrdersCount: number;
+  avatar?: string | null;
+  createdAt: string;
 }
 
 export interface Review {
@@ -72,7 +112,7 @@ export interface Review {
   rating: number;
   date: string;
   text: string;
-  status: 'pending' | 'approved';
+  status: 'pending' | 'approved' | 'rejected';
 }
 
 export interface MenuCardPage {

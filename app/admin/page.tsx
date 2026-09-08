@@ -1,25 +1,28 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminSidebar, AdminTabType } from '@/components/admin/AdminSidebar';
 import { AdminLoginForm } from '@/components/admin/AdminLoginForm';
 import { AdminMenuTab } from '@/components/admin/AdminMenuTab';
 import { AdminOrdersTab } from '@/components/admin/AdminOrdersTab';
 import { AdminReviewsTab } from '@/components/admin/AdminReviewsTab';
 import { AdminSettingsTab } from '@/components/admin/AdminSettingsTab';
+import { AdminPerformersTab } from '@/components/admin/AdminPerformersTab';
+import { AdminFleetMapTab } from '@/components/admin/AdminFleetMapTab';
 import { playKitchenNewOrderSound } from '@/components/AudioNotifier';
 import { apiClient } from '@/lib/api/client';
-import { Category, Order, Product, Review } from '@/lib/types';
+import { Category, Order, Product, Review, Employee } from '@/lib/types';
 import { CAFE_SETTINGS } from '@/lib/initialData';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<'menu' | 'orders' | 'reviews' | 'settings'>('menu');
+  const [activeTab, setActiveTab] = useState<AdminTabType>('orders');
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [cafeSettings, setCafeSettings] = useState<any>(CAFE_SETTINGS);
 
   useEffect(() => {
@@ -64,17 +67,19 @@ export default function AdminPage() {
 
   const loadAllData = async () => {
     try {
-      const [prods, cats, ords, revs, settings] = await Promise.all([
+      const [prods, cats, ords, revs, emps, settings] = await Promise.all([
         apiClient.getProducts(),
         apiClient.getCategories(),
         apiClient.getOrders(),
         apiClient.getReviews(),
+        apiClient.getEmployees(),
         apiClient.getSettings()
       ]);
       setProducts(prods);
       setCategories(cats);
       setOrders(ords);
       setReviews(revs);
+      setEmployees(emps);
       setCafeSettings(settings);
     } catch (err) {
       console.error('Failed to load admin data:', err);
@@ -113,20 +118,36 @@ export default function AdminPage() {
         onLogout={handleLogout}
       />
 
-      <main style={{ flex: 1, padding: '32px 40px', overflowY: 'auto' }}>
-        {activeTab === 'menu' && (
-          <AdminMenuTab
-            products={products}
-            categories={categories}
-            onRefresh={loadAllData}
-          />
-        )}
-
+      <main style={{ flex: 1, padding: activeTab === 'fleet_map' ? '16px 20px' : '32px 40px', overflowY: 'auto' }}>
         {activeTab === 'orders' && (
           <AdminOrdersTab
             orders={orders}
             onRefresh={loadAllData}
             cafeSettings={cafeSettings}
+            couriers={employees}
+          />
+        )}
+
+        {activeTab === 'fleet_map' && (
+          <AdminFleetMapTab
+            employees={employees}
+            orders={orders}
+            onRefresh={loadAllData}
+          />
+        )}
+
+        {activeTab === 'performers' && (
+          <AdminPerformersTab
+            employees={employees}
+            onRefresh={loadAllData}
+          />
+        )}
+
+        {activeTab === 'menu' && (
+          <AdminMenuTab
+            products={products}
+            categories={categories}
+            onRefresh={loadAllData}
           />
         )}
 

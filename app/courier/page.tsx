@@ -38,7 +38,7 @@ export default function CourierPage() {
   // Find active or available delivery orders
   const activeOrder = orders.find((o) => o.id === activeOrderId);
   const availableOrders = orders.filter(
-    (o) => o.status === 'cooking' && o.deliveryType === 'delivery' && o.id !== activeOrderId
+    (o) => (o.status === 'cooking' || o.status === 'delivering') && o.deliveryType === 'delivery' && o.id !== activeOrderId
   );
 
   const handleAcceptOrder = async (orderId: string) => {

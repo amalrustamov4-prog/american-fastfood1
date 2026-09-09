@@ -14,6 +14,8 @@ export interface Product {
   image: string;
   description: string;
   inStock: boolean;
+  isPopular?: boolean;
+  isChefSpecial?: boolean;
   options?: ProductOption[];
 }
 
@@ -42,12 +44,30 @@ export interface OrderItem {
   selectedOptions?: ProductOption[];
 }
 
-export type OrderStatus = 'new' | 'cooking' | 'delivering' | 'completed' | 'cancelled';
+export type OrderStatus =
+  | 'new'
+  | 'accepted'
+  | 'cooking'
+  | 'ready'
+  | 'completed'
+  | 'rejected'
+  | 'cancelled';
+
 export type PaymentMethod = 'payme' | 'click' | 'card' | 'cash';
-export type PaymentStatus = 'pending' | 'paid' | 'cash_on_delivery';
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'cash_on_delivery';
+
+export interface OrderStatusHistory {
+  id: string;
+  orderId: string;
+  status: OrderStatus;
+  comment?: string | null;
+  createdAt: string;
+}
 
 export interface Order {
   id: string;
+  orderNumber?: string | null;
+  userId?: string | null;
   customerName: string;
   phone: string;
   address: string;
@@ -56,61 +76,38 @@ export interface Order {
   paymentStatus: PaymentStatus;
   status: OrderStatus;
   createdAt: string;
+  updatedAt?: string;
   items: OrderItem[];
+  statusHistory?: OrderStatusHistory[];
   itemsTotal: number;
   discountAmount: number;
   promoCode?: string | null;
   deliveryFee: number;
   total: number;
   comment?: string;
-  courierId?: string;
-  courierName?: string;
-  courierPhone?: string;
+  rejectionReason?: string | null;
 }
 
-export type EmployeeRole = 'kuryer' | 'ofitsiant' | 'povar' | 'povar_yordamchisi' | 'ish_boshqaruvchi' | 'taksi';
-export type CourierType = 'piyoda' | 'avto' | 'moto' | 'yuk';
-export type PerformerStatus = 'free' | 'on_order' | 'busy' | 'no_gps';
-
-export interface Employee {
+export interface UserProfile {
   id: string;
-  role: EmployeeRole;
-  courierType?: CourierType | null;
-  lastName: string;
-  firstName: string;
-  middleName?: string | null;
-  phone: string;
+  username?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  name: string;
+  firstName?: string | null;
+  lastName?: string | null;
   birthDate?: string | null;
-  workCondition?: string | null;
-  drivingExperienceDate?: string | null;
-  licenseNumber?: string | null;
-  licenseCountry?: string | null;
-  licenseIssueDate?: string | null;
-  licenseExpiryDate?: string | null;
-  address?: string | null;
-  jshshir?: string | null;
-  trafficSource?: string | null;
-  hearingImpaired?: boolean;
-  notes?: string | null;
-  status: PerformerStatus;
-  hasGps: boolean;
-  lat: number;
-  lng: number;
-  balance: number;
-  vehiclePlate?: string | null;
-  vehicleModel?: string | null;
-  rating: number;
-  completedOrdersCount: number;
+  role: 'ADMIN' | 'CUSTOMER';
   avatar?: string | null;
-  createdAt: string;
+  address?: string | null;
 }
 
 export interface Review {
   id: string;
   author: string;
-  avatar: string;
+  avatar?: string | null;
   rating: number;
-  date: string;
+  date?: string | null;
   text: string;
   status: 'pending' | 'approved' | 'rejected';
 }

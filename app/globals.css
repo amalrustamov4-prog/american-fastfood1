@@ -574,3 +574,71 @@ input, textarea, select {
   from { opacity: 0; transform: translateY(20px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* ==========================================================================
+   FLAVORA KITCHEN / AMERICAN REFERENCE DESIGN STYLES
+   ========================================================================== */
+.floating-hero-dish {
+  animation: floatDish 4s ease-in-out infinite alternate;
+}
+
+.hero-dish-top-left { animation-delay: 0s; }
+.hero-dish-top-center { animation-delay: 0.8s; }
+.hero-dish-top-right { animation-delay: 1.6s; }
+.hero-dish-bottom-left { animation-delay: 0.4s; }
+.hero-dish-bottom-center { animation-delay: 1.2s; }
+.hero-dish-bottom-right { animation-delay: 2.0s; }
+
+@keyframes floatDish {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@media (max-width: 991px) {
+  .hero-dish-top-center,
+  .hero-dish-bottom-center {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-hero-dish {
+    width: 65px !important;
+    height: 65px !important;
+    opacity: 0.55;
+  }
+  .hero-dish-top-left { top: 10px !important; left: 10px !important; }
+  .hero-dish-top-right { top: 10px !important; right: 10px !important; }
+  .hero-dish-bottom-left { bottom: 10px !important; left: 10px !important; }
+  .hero-dish-bottom-right { bottom: 10px !important; right: 10px !important; }
+
+  .desktop-nav {
+    display: none !important;
+  }
+  .profile-name-text {
+    display: none !important;
+  }
+  .order-now-btn {
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+  }
+}
+
+.dish-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(225, 29, 72, 0.4) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dish-card:hover img {
+  transform: scale(1.05);
+}
+
+.category-scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
+.category-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+

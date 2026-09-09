@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { CreateOrderSchema } from '@/lib/validations/schemas';
 import { ensureDatabaseSeeded } from '@/lib/seedData';
+import { getCurrentUser } from '@/lib/auth';
 
 export async function GET(request: Request) {
   try {
@@ -17,14 +18,17 @@ export async function GET(request: Request) {
     const orders = await prisma.order.findMany({
       where,
       include: {
-        items: true
+        items: true,
+        statusHistory: {
+          orderBy: { createdAt: 'asc' }
+        }
       },
       orderBy: { createdAt: 'desc' }
     });
 
     const formatted = orders.map((o) => ({
       id: o.id,
-      orderNumber: o.orderNumber,
+      orderNumber: o.orderNumber || o.id,
       customerName: o.customerName,
       phone: o.phone,
       address: o.address,
@@ -38,24 +42,29 @@ export async function GET(request: Request) {
       deliveryFee: o.deliveryFee,
       total: o.total,
       comment: o.comment || '',
-      courierId: o.courierId,
-      courierName: o.courierName,
-      courierPhone: o.courierPhone,
+      rejectionReason: o.rejectionReason,
       createdAt: o.createdAt.toISOString(),
+      updatedAt: o.updatedAt ? o.updatedAt.toISOString() : o.createdAt.toISOString(),
       items: o.items.map((i) => ({
         id: i.productId || i.id,
         name: i.name,
         price: i.price,
         quantity: i.quantity,
         selectedOptions: i.optionsJson ? JSON.parse(i.optionsJson) : []
+      })),
+      statusHistory: o.statusHistory.map((h) => ({
+        id: h.id,
+        orderId: h.orderId,
+        status: h.status,
+        comment: h.comment,
+        createdAt: h.createdAt.toISOString()
       }))
     }));
 
     return NextResponse.json(formatted);
   } catch (error) {
     console.error('GET /api/orders error:', error);
-    const { INITIAL_ORDERS } = await import('@/lib/initialData');
-    return NextResponse.json(INITIAL_ORDERS);
+    return NextResponse.json([]);
   }
 }
 
@@ -80,10 +89,15 @@ export async function POST(request: Request) {
       paymentMethod,
       comment,
       promoCode,
-      items
+      items,
+      userId
     } = validation.data;
 
-    // 1. Fetch products from database to calculate real prices (Server-side validation)
+    // Check optional authenticated user
+    const currentUser = await getCurrentUser();
+    const effectiveUserId = userId || currentUser?.id || null;
+
+    // 1. Fetch products from database to calculate real prices
     const productIds = items.map((i) => i.productId);
     const dbProducts = await prisma.product.findMany({
       where: { id: { in: productIds } }
@@ -109,7 +123,6 @@ export async function POST(request: Request) {
         );
       }
 
-      // Calculate unit price including valid selected options
       const optionsPrice = (item.selectedOptions || []).reduce((sum, opt) => sum + Math.max(0, opt.price), 0);
       const unitPrice = dbProd.price + optionsPrice;
       const itemSubtotal = unitPrice * item.quantity;
@@ -137,7 +150,7 @@ export async function POST(request: Request) {
       deliveryFee = calculatedItemsTotal >= freeDeliveryLimit ? 0 : deliveryFeeRate;
     }
 
-    // 3. Check and apply promo code on the server
+    // 3. Check and apply promo code
     let discountAmount = 0;
     if (promoCode && promoCode.trim()) {
       const dbPromo = await prisma.promoCode.findUnique({
@@ -155,20 +168,23 @@ export async function POST(request: Request) {
 
     // 4. Server-computed total
     const finalTotal = Math.max(0, calculatedItemsTotal - discountAmount + deliveryFee);
-    const orderId = `FF-${Math.floor(1000 + Math.random() * 9000)}`;
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const orderNumber = `AM-${randomSuffix}`;
+    const orderId = `order_${Date.now()}_${randomSuffix}`;
 
-    // 5. Atomic save in database
+    // 5. Save order in database (Status is NEW) + create first StatusHistory entry
     const createdOrder = await prisma.order.create({
       data: {
         id: orderId,
-        orderNumber: orderId,
+        orderNumber,
+        userId: effectiveUserId && effectiveUserId !== 'admin-master' ? effectiveUserId : null,
         customerName,
         phone,
         address: deliveryType === 'delivery' ? address : `Самовывоз: ${settings?.address || 'Кафе AMERICAN'}`,
         deliveryType,
         paymentMethod,
         paymentStatus: paymentMethod === 'cash' ? 'cash_on_delivery' : 'pending',
-        status: 'new',
+        status: 'new', // Directly to admin
         itemsTotal: calculatedItemsTotal,
         discountAmount,
         promoCode: promoCode || null,
@@ -177,10 +193,19 @@ export async function POST(request: Request) {
         comment: comment || '',
         items: {
           create: orderItemsToCreate
+        },
+        statusHistory: {
+          create: [
+            {
+              status: 'new',
+              comment: 'Заказ оформлен клиентом'
+            }
+          ]
         }
       },
       include: {
-        items: true
+        items: true,
+        statusHistory: true
       }
     });
 
@@ -208,6 +233,13 @@ export async function POST(request: Request) {
           price: i.price,
           quantity: i.quantity,
           selectedOptions: i.optionsJson ? JSON.parse(i.optionsJson) : []
+        })),
+        statusHistory: createdOrder.statusHistory.map((h) => ({
+          id: h.id,
+          orderId: h.orderId,
+          status: h.status,
+          comment: h.comment,
+          createdAt: h.createdAt.toISOString()
         }))
       },
       { status: 201 }

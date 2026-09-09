@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, Sparkles, Maximize2, Flame, Utensils, UtensilsCrossed, Sandwich, Pizza, Cake, Drumstick, Fish, Salad, CupSoda } from 'lucide-react';
 import { Category, Product, ProductOption } from '@/lib/types';
+import { matchProductSearch } from '@/lib/searchUtils';
 
 interface MenuSectionProps {
   products: Product[];
@@ -39,10 +40,8 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       if (!p.inStock) return false;
-      const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
-      const matchesSearch =
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = !searchQuery.trim() || matchProductSearch(p, searchQuery);
+      const matchesCategory = searchQuery.trim() ? true : (activeCategory === 'all' || p.category === activeCategory);
       return matchesCategory && matchesSearch;
     }).sort((a, b) => {
       if (sortBy === 'price-asc') return a.price - b.price;

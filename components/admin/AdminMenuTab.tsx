@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Plus, Search, Edit, Trash2, Eye, EyeOff, X, Save, Image as ImageIcon } from 'lucide-react';
 import { Category, Product } from '@/lib/types';
 import { apiClient } from '@/lib/api/client';
+import { matchProductSearch } from '@/lib/searchUtils';
 
 interface AdminMenuTabProps {
   products: Product[];
@@ -101,10 +102,8 @@ export const AdminMenuTab: React.FC<AdminMenuTabProps> = ({
   };
 
   const filtered = products.filter((p) => {
-    const matchesCat = selectedCategory === 'all' || p.category === selectedCategory;
-    const matchesSearch =
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      (p.description || '').toLowerCase().includes(search.toLowerCase());
+    const matchesCat = search.trim() ? true : (selectedCategory === 'all' || p.category === selectedCategory);
+    const matchesSearch = !search.trim() || matchProductSearch(p, search);
     return matchesCat && matchesSearch;
   });
 

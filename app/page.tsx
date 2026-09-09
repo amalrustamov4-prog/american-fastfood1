@@ -3,19 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { HeroBanner } from '@/components/HeroBanner';
-import { WelcomePresentation } from '@/components/WelcomePresentation';
+import { CategoryBar } from '@/components/CategoryBar';
+import { PopularDishes } from '@/components/PopularDishes';
+import { SpecialOffersBanner } from '@/components/SpecialOffersBanner';
+import { ChefSpecial } from '@/components/ChefSpecial';
 import { MenuSection } from '@/components/MenuSection';
 import { PhotoMenuSection } from '@/components/PhotoMenuSection';
+import { ReviewsSection } from '@/components/ReviewsSection';
+import { Footer } from '@/components/Footer';
 import { ProductModal } from '@/components/ProductModal';
 import { CartDrawer } from '@/components/CartDrawer';
 import { CheckoutModal } from '@/components/CheckoutModal';
 import { PaymentSimulator } from '@/components/PaymentSimulator';
 import { ThermalReceipt } from '@/components/ThermalReceipt';
-import { CourierTracker } from '@/components/CourierTracker';
-import { ReviewsSection } from '@/components/ReviewsSection';
-import { Footer } from '@/components/Footer';
+import { AuthModal } from '@/components/AuthModal';
+import { UserProfileModal } from '@/components/UserProfileModal';
+import { SearchModal } from '@/components/SearchModal';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { apiClient } from '@/lib/api/client';
-import { isPresentationDismissed, markPresentationDismissed } from '@/lib/storage';
 import {
   CafeSettings,
   CartItem,
@@ -25,10 +30,17 @@ import {
   PaymentMethod,
   Product,
   ProductOption,
-  Review
+  Review,
+  UserProfile
 } from '@/lib/types';
-import { CAFE_SETTINGS, INITIAL_CATEGORIES, INITIAL_MENU_PAGES, INITIAL_PRODUCTS, INITIAL_REVIEWS } from '@/lib/initialData';
-import { Home, Utensils, Camera, ShoppingBag, MapPin, X } from 'lucide-react';
+import {
+  CAFE_SETTINGS,
+  INITIAL_CATEGORIES,
+  INITIAL_MENU_PAGES,
+  INITIAL_PRODUCTS,
+  INITIAL_REVIEWS
+} from '@/lib/initialData';
+import { X } from 'lucide-react';
 
 export default function CustomerPage() {
   // Data State with initial fallbacks
@@ -38,16 +50,24 @@ export default function CustomerPage() {
   const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
   const [cafeSettings, setCafeSettings] = useState<CafeSettings>(CAFE_SETTINGS);
 
+  // Active Category filter
+  const [selectedCategoryId, setSelectedCategoryId] = useState('all');
+
+  // User State
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+
   // Cart State
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   // Modals State
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isPresentationOpen, setIsPresentationOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutDiscount, setCheckoutDiscount] = useState(0);
   const [checkoutPromo, setCheckoutPromo] = useState('');
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Payment Sim & Receipt
   const [paymentSimData, setPaymentSimData] = useState<{
@@ -61,7 +81,6 @@ export default function CustomerPage() {
     total: 0
   });
   const [receiptOrder, setReceiptOrder] = useState<Order | null>(null);
-  const [trackingOrder, setTrackingOrder] = useState<Order | null>(null);
 
   // Image Lightbox
   const [lightboxData, setLightboxData] = useState<{
@@ -75,13 +94,8 @@ export default function CustomerPage() {
   });
 
   useEffect(() => {
-    // Load fresh data from PostgreSQL API
     loadInitialData();
-
-    // Show presentation on first visit
-    if (!isPresentationDismissed()) {
-      setIsPresentationOpen(true);
-    }
+    checkCurrentUser();
   }, []);
 
   const loadInitialData = async () => {
@@ -98,6 +112,17 @@ export default function CustomerPage() {
       setCafeSettings(settings);
     } catch (e) {
       console.warn('Using initial fallback data:', e);
+    }
+  };
+
+  const checkCurrentUser = async () => {
+    try {
+      const me = await apiClient.getMe();
+      if (me) {
+        setCurrentUser(me);
+      }
+    } catch (e) {
+      // not logged in
     }
   };
 
@@ -120,20 +145,21 @@ export default function CustomerPage() {
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
+      } else {
+        return [
+          ...prev,
+          {
+            id: cartItemId,
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity,
+            selectedOptions: options,
+            totalItemPrice
+          }
+        ];
       }
-      return [
-        ...prev,
-        {
-          id: cartItemId,
-          productId: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity,
-          selectedOptions: options,
-          totalItemPrice
-        }
-      ];
     });
 
     setIsCartOpen(true);
@@ -143,212 +169,217 @@ export default function CustomerPage() {
     handleAddToCart(product, 1, []);
   };
 
-  const handleUpdateQuantity = (id: string, quantity: number) => {
-    setCart((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+  const handleUpdateCartQuantity = (itemId: string, delta: number) => {
+    setCart((prev) => {
+      return prev
+        .map((item) => {
+          if (item.id === itemId) {
+            const newQ = item.quantity + delta;
+            return newQ > 0 ? { ...item, quantity: newQ } : null;
+          }
+          return item;
+        })
+        .filter(Boolean) as CartItem[];
+    });
   };
 
-  const handleRemoveItem = (id: string) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  const handleRemoveCartItem = (itemId: string) => {
+    setCart((prev) => prev.filter((i) => i.id !== itemId));
   };
 
   const handleClearCart = () => {
     setCart([]);
   };
 
-  // --- CHECKOUT & PAYMENT FLOW ---
-  const handleProceedToCheckout = (discount: number, promo: string) => {
+  // --- CHECKOUT & ORDER SUBMIT ---
+  const handleStartCheckout = (discount: number, promo: string) => {
     setCheckoutDiscount(discount);
     setCheckoutPromo(promo);
+    setIsCartOpen(false);
     setIsCheckoutOpen(true);
   };
 
-  const handleSubmitOrder = async (orderPayload: any) => {
-    setIsCheckoutOpen(false);
-
-    if (
-      orderPayload.paymentMethod === 'payme' ||
-      orderPayload.paymentMethod === 'click' ||
-      orderPayload.paymentMethod === 'card'
-    ) {
-      setPaymentSimData({
-        isOpen: true,
-        method: orderPayload.paymentMethod,
-        total: orderPayload.total || 0,
-        orderData: orderPayload
-      });
-    } else {
-      await processServerOrder(orderPayload);
-    }
-  };
-
-  const processServerOrder = async (orderPayload: any) => {
+  const handleSubmitOrder = async (orderData: Partial<Order>) => {
     try {
-      // Send order to backend API with server-side calculation
-      const serverOrder = await apiClient.createOrder({
-        customerName: orderPayload.customerName,
-        phone: orderPayload.phone,
-        address: orderPayload.address,
-        deliveryType: orderPayload.deliveryType,
-        paymentMethod: orderPayload.paymentMethod,
-        comment: orderPayload.comment,
-        promoCode: orderPayload.promoCode,
+      const payload = {
+        customerName: orderData.customerName || 'Гость',
+        phone: orderData.phone || '+998 90 000 00 00',
+        address: orderData.address || 'Термез',
+        deliveryType: orderData.deliveryType || 'delivery',
+        paymentMethod: orderData.paymentMethod || 'cash',
+        comment: orderData.comment || '',
+        promoCode: orderData.promoCode,
         items: cart.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
           selectedOptions: i.selectedOptions
         }))
-      });
+      };
 
-      setCart([]);
-      setReceiptOrder(serverOrder);
-      if (serverOrder.deliveryType === 'delivery') {
-        setTrackingOrder(serverOrder);
+      const createdOrder = await apiClient.createOrder(payload);
+
+      setIsCheckoutOpen(false);
+      handleClearCart();
+
+      // If online payment (click, payme, card), open payment simulator
+      if (orderData.paymentMethod === 'click' || orderData.paymentMethod === 'payme' || orderData.paymentMethod === 'card') {
+        setPaymentSimData({
+          isOpen: true,
+          method: orderData.paymentMethod,
+          total: createdOrder.total,
+          orderData: createdOrder
+        });
+      } else {
+        // Cash order complete -> show receipt & open profile if logged in
+        setReceiptOrder(createdOrder);
       }
-    } catch (err: any) {
-      alert(err.message || 'Ошибка оформления заказа. Попробуйте еще раз.');
+    } catch (e: any) {
+      alert(e.message || 'Ошибка оформления заказа');
     }
   };
 
-  const handlePaymentSimulatorSuccess = async () => {
-    setPaymentSimData((prev) => ({ ...prev, isOpen: false }));
-    if (paymentSimData.orderData) {
-      await processServerOrder(paymentSimData.orderData);
-    }
-  };
-
-  // --- REVIEWS ---
-  const handleSubmitReview = async (newRev: { author: string; rating: number; text: string }) => {
+  const handlePaymentSuccess = async () => {
+    if (!paymentSimData.orderData) return;
     try {
-      const created = await apiClient.createReview(newRev);
-      setReviews((prev) => [created, ...prev]);
-    } catch (err: any) {
-      alert(err.message || 'Не удалось отправить отзыв');
+      const updated = await apiClient.updateOrderStatus(
+        paymentSimData.orderData.id,
+        'new',
+        'paid'
+      );
+      setPaymentSimData({ isOpen: false, method: 'payme', total: 0 });
+      setReceiptOrder(updated);
+    } catch (e) {
+      setPaymentSimData({ isOpen: false, method: 'payme', total: 0 });
     }
   };
 
-  // --- LIGHTBOX ---
-  const handleOpenLightbox = (image: string, title: string) => {
-    setLightboxData({ isOpen: true, image, title });
+  const handleLogout = async () => {
+    try {
+      await apiClient.logout();
+      setCurrentUser(null);
+      setIsProfileOpen(false);
+    } catch (e) {
+      setCurrentUser(null);
+    }
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Site Header */}
+    <div style={{ minHeight: '100vh', background: '#0B0D14', color: '#FFF' }}>
+      {/* 1. Header (with FLAVORA KITCHEN reference links, search, cart, auth) */}
       <Header
         cafeSettings={cafeSettings}
         cartCount={cartCount}
         cartTotal={cartTotal}
+        currentUser={currentUser}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenPresentation={() => setIsPresentationOpen(true)}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      {/* Main Content */}
-      <main style={{ flex: 1 }}>
-        <HeroBanner onOpenPresentation={() => setIsPresentationOpen(true)} />
-
-        <PhotoMenuSection
-          menuPages={menuPages}
-          onOpenLightbox={handleOpenLightbox}
-        />
-
-        <MenuSection
-          products={products}
-          categories={categories}
-          onSelectProduct={(prod) => setSelectedProduct(prod)}
-          onQuickAdd={handleQuickAdd}
-          onOpenImageZoom={handleOpenLightbox}
-        />
-
-        <ReviewsSection
-          reviews={reviews}
-          onSubmitReview={handleSubmitReview}
-        />
-      </main>
-
-      {/* Footer */}
-      <Footer cafeSettings={cafeSettings} />
-
-      {/* Mobile Bottom Bar Navigation */}
-      <nav className="mobile-bottom-nav">
-        <a href="#hero" className="mobile-nav-item active">
-          <Home size={18} />
-          <span>Главная</span>
-        </a>
-        <a href="#menu" className="mobile-nav-item">
-          <Utensils size={18} />
-          <span>Меню</span>
-        </a>
-        <a href="#photo-menu" className="mobile-nav-item">
-          <Camera size={18} />
-          <span>Фото</span>
-        </a>
-        <button
-          onClick={() => setIsCartOpen(true)}
-          className="mobile-nav-item"
-        >
-          <ShoppingBag size={18} />
-          <span>Корзина</span>
-          {cartCount > 0 && (
-            <span
-              style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '12px',
-                background: 'var(--primary)',
-                color: '#fff',
-                fontSize: '10px',
-                fontWeight: 900,
-                width: '18px',
-                height: '18px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              {cartCount}
-            </span>
-          )}
-        </button>
-        <a href="#delivery" className="mobile-nav-item">
-          <MapPin size={18} />
-          <span>Локация</span>
-        </a>
-      </nav>
-
-      {/* Modals & Overlays */}
-      <WelcomePresentation
-        isOpen={isPresentationOpen}
-        onClose={() => {
-          setIsPresentationOpen(false);
-          markPresentationDismissed();
-        }}
-        onSelectMenu={() => {
+      {/* 2. Main Hero Banner matching Reference Image ("Experience Taste Like Never Before") */}
+      <HeroBanner
+        cafeSettings={cafeSettings}
+        onExploreMenu={() => {
           const el = document.getElementById('menu');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
       />
 
-      <ProductModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onAddToCart={handleAddToCart}
-        onOpenImageZoom={handleOpenLightbox}
+      {/* 3. Browse Categories (Circular Icons matching Reference Image) */}
+      <CategoryBar
+        categories={categories}
+        activeCategory={selectedCategoryId}
+        onSelectCategory={(catId) => {
+          setSelectedCategoryId(catId);
+          const el = document.getElementById('menu');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
       />
 
+      {/* 4. Popular Dishes Grid (Cards matching Reference Image with Stars, Badge, Round Cart button) */}
+      <PopularDishes
+        products={products}
+        onSelectProduct={(p) => setSelectedProduct(p)}
+        onQuickAdd={handleQuickAdd}
+      />
+
+      {/* 5. Special Offers Banner (Orange/Red 20% OFF Card matching Reference) */}
+      <SpecialOffersBanner />
+
+      {/* 6. Chef's Special (Seafood Paella / Chef Choice Card matching Reference) */}
+      <ChefSpecial
+        product={products.find((p) => p.isChefSpecial)}
+        onOrderNow={(p) => {
+          handleQuickAdd(p);
+        }}
+      />
+
+      {/* 7. Full Interactive Menu Catalog with Filters, Search, Modifiers */}
+      <MenuSection
+        products={products}
+        categories={categories}
+        onSelectProduct={(p) => setSelectedProduct(p)}
+        onQuickAdd={handleQuickAdd}
+        onOpenImageZoom={(image, title) => setLightboxData({ isOpen: true, image, title })}
+      />
+
+      {/* 8. Photo Menu Presentation Pages */}
+      <PhotoMenuSection
+        menuPages={menuPages}
+        onOpenLightbox={(image, title) => setLightboxData({ isOpen: true, image, title })}
+      />
+
+      {/* 9. Customer Reviews */}
+      <ReviewsSection
+        reviews={reviews}
+        onSubmitReview={async (rev) => {
+          try {
+            await apiClient.createReview(rev);
+            loadInitialData();
+          } catch (e) {
+            // ignore
+          }
+        }}
+      />
+
+      {/* 10. Footer */}
+      <Footer cafeSettings={cafeSettings} />
+
+      {/* 11. Mobile App Bottom Navigation Bar */}
+      <MobileBottomNav
+        cartCount={cartCount}
+        currentUser={currentUser}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
+      />
+
+      {/* --- MODALS --- */}
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
+          onOpenImageZoom={(image, title) => setLightboxData({ isOpen: true, image, title })}
+        />
+      )}
+
+      {/* Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onClearCart={handleClearCart}
-        onProceedToCheckout={handleProceedToCheckout}
         freeDeliveryThreshold={cafeSettings.freeDeliveryThreshold}
+        onUpdateQuantity={handleUpdateCartQuantity}
+        onRemoveItem={handleRemoveCartItem}
+        onClearCart={handleClearCart}
+        onProceedToCheckout={handleStartCheckout}
       />
 
+      {/* Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
@@ -356,55 +387,82 @@ export default function CustomerPage() {
         discountAmount={checkoutDiscount}
         promoCode={checkoutPromo}
         cafeSettings={cafeSettings}
+        currentUser={currentUser}
         onSubmitOrder={handleSubmitOrder}
       />
 
+      {/* Payment Simulator */}
       <PaymentSimulator
         isOpen={paymentSimData.isOpen}
-        onClose={() => setPaymentSimData((prev) => ({ ...prev, isOpen: false }))}
+        onClose={() => setPaymentSimData({ isOpen: false, method: 'payme', total: 0 })}
         method={paymentSimData.method}
         total={paymentSimData.total}
-        onPaymentSuccess={handlePaymentSimulatorSuccess}
+        onPaymentSuccess={handlePaymentSuccess}
       />
 
-      <ThermalReceipt
-        order={receiptOrder}
-        cafeSettings={cafeSettings}
-        onClose={() => setReceiptOrder(null)}
-      />
-
-      {trackingOrder && (
-        <CourierTracker
-          order={trackingOrder}
-          onClose={() => setTrackingOrder(null)}
+      {/* Thermal Receipt Modal */}
+      {receiptOrder && (
+        <ThermalReceipt
+          order={receiptOrder}
+          cafeSettings={cafeSettings}
+          onClose={() => setReceiptOrder(null)}
         />
       )}
 
-      {/* Lightbox Modal */}
+      {/* Auth Modal (Login / Register with 6-digit code / Reset Password) */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={(user) => {
+          setCurrentUser(user);
+        }}
+      />
+
+      {/* User Profile Modal (Live Order Status / Order History / Edit Profile) */}
+      {currentUser && (
+        <UserProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          onProfileUpdated={(updated) => setCurrentUser(updated)}
+          cafeSettings={cafeSettings}
+        />
+      )}
+
+      {/* Live Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        products={products}
+        onSelectProduct={(p) => setSelectedProduct(p)}
+        onQuickAdd={handleQuickAdd}
+      />
+
+      {/* Image Lightbox */}
       {lightboxData.isOpen && (
         <div
           className="modal-overlay"
           onClick={() => setLightboxData({ isOpen: false, image: '', title: '' })}
-          style={{ zIndex: 1300, background: 'rgba(0, 0, 0, 0.88)' }}
+          style={{ zIndex: 1200 }}
         >
           <div
-            onClick={(e) => e.stopPropagation()}
             style={{
               position: 'relative',
               maxWidth: '90vw',
               maxHeight: '90vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
+              borderRadius: '16px',
+              overflow: 'hidden'
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setLightboxData({ isOpen: false, image: '', title: '' })}
               style={{
                 position: 'absolute',
-                top: '-40px',
-                right: '0',
-                background: 'rgba(255, 255, 255, 0.2)',
+                top: '16px',
+                right: '16px',
+                background: 'rgba(0, 0, 0, 0.7)',
                 color: '#fff',
                 width: '36px',
                 height: '36px',
@@ -412,37 +470,23 @@ export default function CustomerPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backdropFilter: 'blur(8px)'
+                border: 'none',
+                cursor: 'pointer',
+                zIndex: 10
               }}
             >
               <X size={20} />
             </button>
-
             <img
               src={lightboxData.image}
               alt={lightboxData.title}
               style={{
-                maxWidth: '100%',
-                maxHeight: '80vh',
+                width: '100%',
+                maxHeight: '85vh',
                 objectFit: 'contain',
-                borderRadius: '16px',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.8)'
+                display: 'block'
               }}
             />
-            <div
-              style={{
-                marginTop: '12px',
-                color: '#fff',
-                fontSize: '16px',
-                fontWeight: 700,
-                textAlign: 'center',
-                background: 'rgba(0, 0, 0, 0.6)',
-                padding: '6px 16px',
-                borderRadius: '9999px'
-              }}
-            >
-              {lightboxData.title}
-            </div>
           </div>
         </div>
       )}

@@ -30,21 +30,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect courier route
-  if (pathname.startsWith('/courier')) {
-    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-    if (token) {
-      try {
-        await jwtVerify(token, SECRET_KEY);
-      } catch (err) {
-        // Continue
-      }
-    }
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/courier/:path*']
+  matcher: ['/admin/:path*']
 };

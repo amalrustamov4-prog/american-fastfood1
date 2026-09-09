@@ -10,7 +10,9 @@ export interface AuthUserPayload {
   id: string;
   username: string;
   name: string;
-  role: 'ADMIN' | 'COURIER' | 'CUSTOMER';
+  email?: string | null;
+  phone?: string | null;
+  role: 'ADMIN' | 'CUSTOMER';
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -22,11 +24,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
-export async function signAuthToken(payload: AuthUserPayload): Promise<string> {
+export async function signAuthToken(payload: AuthUserPayload, rememberMe: boolean = true): Promise<string> {
+  const expiration = rememberMe ? '30d' : '24h';
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d')
+    .setExpirationTime(expiration)
     .sign(SECRET_KEY);
 }
 
@@ -35,9 +38,11 @@ export async function verifyAuthToken(token: string): Promise<AuthUserPayload | 
     const { payload } = await jwtVerify(token, SECRET_KEY);
     return {
       id: payload.id as string,
-      username: payload.username as string,
-      name: payload.name as string,
-      role: payload.role as 'ADMIN' | 'COURIER' | 'CUSTOMER'
+      username: (payload.username as string) || 'user',
+      name: (payload.name as string) || 'Пользователь',
+      email: payload.email as string | undefined,
+      phone: payload.phone as string | undefined,
+      role: (payload.role as 'ADMIN' | 'CUSTOMER') || 'CUSTOMER'
     };
   } catch (error) {
     return null;

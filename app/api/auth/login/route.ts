@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { LoginInputSchema } from '@/lib/validations/schemas';
-import { AUTH_COOKIE_NAME, hashPassword, signAuthToken, verifyPassword } from '@/lib/auth';
+import { AUTH_COOKIE_NAME, signAuthToken, verifyPassword } from '@/lib/auth';
 import { ensureDatabaseSeeded } from '@/lib/seedData';
 
 export async function POST(request: Request) {
@@ -12,33 +12,41 @@ export async function POST(request: Request) {
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Неверные данные для входа', details: validation.error.format() },
+        { error: 'Введите корректный логин/email и пароль' },
         { status: 400 }
       );
     }
 
-    const { username, password } = validation.data;
+    const { username, password, rememberMe } = validation.data;
+    const cleanLogin = username.trim();
 
-    // 1. Master admin fallback (Works 100% reliably even on serverless / read-only databases)
+    // 1. Master admin fallback
     const masterAdminUser = (process.env.ADMIN_USERNAME || 'admin').trim();
     const masterAdminPass = (process.env.ADMIN_PASSWORD || 'admin_secure_password_2026').trim();
 
     if (
-      (username.trim() === masterAdminUser || username.trim() === 'admin' || username.trim() === '+998908220101') &&
-      (password === masterAdminPass || password === 'admin_secure_password_2026')
+      (cleanLogin.toLowerCase() === masterAdminUser.toLowerCase() ||
+        cleanLogin === 'admin' ||
+        cleanLogin === '+998908220101' ||
+        cleanLogin.toLowerCase() === 'admin@american-fastfood.uz') &&
+      password === masterAdminPass
     ) {
       const payload = {
         id: 'admin-master',
         username: 'admin',
         name: 'Главный Администратор',
+        email: 'admin@american-fastfood.uz',
+        phone: '+998908220101',
         role: 'ADMIN' as const
       };
 
-      const token = await signAuthToken(payload);
+      const token = await signAuthToken(payload, rememberMe ?? true);
       const response = NextResponse.json({
         success: true,
         user: payload
       });
+
+      const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24;
 
       response.cookies.set({
         name: AUTH_COOKIE_NAME,
@@ -47,58 +55,56 @@ export async function POST(request: Request) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 60 * 60 * 24 * 7
+        maxAge
       });
 
       return response;
     }
 
-    // 2. Check Database for user
-    let user = null;
-    try {
-      user = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { username: username },
-            { phone: username },
-            { email: username.toLowerCase() }
-          ]
-        }
-      });
-    } catch (dbErr) {
-      console.error('Prisma user lookup error:', dbErr);
-    }
+    // 2. Lookup user by email, phone, or username
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: cleanLogin.toLowerCase() },
+          { phone: cleanLogin },
+          { username: cleanLogin }
+        ]
+      }
+    });
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Неверный логин или пароль' },
+        { error: 'Пользователь с такими данными не найден' },
         { status: 401 }
       );
     }
 
+    // 3. Verify password hash
     const isPasswordValid = await verifyPassword(password, user.passwordHash);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'Неверный логин или пароль' },
+        { error: 'Неверный пароль' },
         { status: 401 }
       );
     }
 
     const payload = {
       id: user.id,
-      username: user.username || user.phone || 'user',
+      username: user.email || user.phone || 'user',
       name: user.name,
-      role: user.role as 'ADMIN' | 'COURIER' | 'CUSTOMER'
+      email: user.email,
+      phone: user.phone,
+      role: (user.role as 'ADMIN' | 'CUSTOMER') || 'CUSTOMER'
     };
 
-    const token = await signAuthToken(payload);
-
+    const token = await signAuthToken(payload, rememberMe ?? true);
     const response = NextResponse.json({
       success: true,
       user: payload
     });
 
-    // Set secure HTTP-only Cookie
+    const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24;
+
     response.cookies.set({
       name: AUTH_COOKIE_NAME,
       value: token,
@@ -106,7 +112,7 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
+      maxAge
     });
 
     return response;

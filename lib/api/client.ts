@@ -1,15 +1,58 @@
-import { CafeSettings, Category, Order, OrderStatus, Product, Review } from '@/lib/types';
+import { CafeSettings, Category, Order, OrderStatus, Product, Review, UserProfile } from '@/lib/types';
 
 export const apiClient = {
   // --- AUTH ---
-  async login(username: string, password: string) {
+  async login(username: string, password: string, rememberMe: boolean = false) {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password, rememberMe })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Ошибка входа');
+    return data;
+  },
+
+  async register(registerData: {
+    username?: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    birthDate?: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    code: string;
+  }) {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerData)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Ошибка регистрации');
+    return data;
+  },
+
+  async sendVerificationCode(email: string) {
+    const res = await fetch('/api/auth/send-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Не удалось отправить код');
+    return data;
+  },
+
+  async resetPassword(payload: { email: string; code: string; newPassword: string }) {
+    const res = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Ошибка сброса пароля');
     return data;
   },
 
@@ -18,10 +61,21 @@ export const apiClient = {
     return res.json();
   },
 
-  async getMe() {
+  async getMe(): Promise<UserProfile | null> {
     const res = await fetch('/api/auth/me');
     if (!res.ok) return null;
     const data = await res.json();
+    return data.user;
+  },
+
+  async updateProfile(profileData: Partial<UserProfile>): Promise<UserProfile> {
+    const res = await fetch('/api/auth/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profileData)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Не удалось обновить профиль');
     return data.user;
   },
 
@@ -95,6 +149,12 @@ export const apiClient = {
     return res.json();
   },
 
+  async getMyOrders(): Promise<Order[]> {
+    const res = await fetch('/api/orders/my');
+    if (!res.ok) return [];
+    return res.json();
+  },
+
   async createOrder(orderPayload: {
     customerName: string;
     phone: string;
@@ -123,7 +183,7 @@ export const apiClient = {
     orderId: string,
     status: OrderStatus,
     paymentStatus?: string,
-    courierInfo?: { courierId?: string; courierName?: string; courierPhone?: string }
+    rejectionReason?: string
   ): Promise<Order> {
     const res = await fetch(`/api/orders/${orderId}`, {
       method: 'PATCH',
@@ -131,9 +191,7 @@ export const apiClient = {
       body: JSON.stringify({
         status,
         paymentStatus,
-        courierId: courierInfo?.courierId,
-        courierName: courierInfo?.courierName,
-        courierPhone: courierInfo?.courierPhone
+        rejectionReason
       })
     });
     const data = await res.json();
@@ -141,44 +199,8 @@ export const apiClient = {
     return data;
   },
 
-  // --- EMPLOYEES & PERFORMERS ---
-  async getEmployees(role?: string, status?: string): Promise<any[]> {
-    const params = new URLSearchParams();
-    if (role && role !== 'all') params.set('role', role);
-    if (status && status !== 'all') params.set('status', status);
-
-    const url = `/api/employees${params.toString() ? `?${params.toString()}` : ''}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Не удалось загрузить список исполнителей');
-    return res.json();
-  },
-
-  async createEmployee(data: any): Promise<any> {
-    const res = await fetch('/api/employees', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const resData = await res.json();
-    if (!res.ok) throw new Error(resData.error || 'Не удалось сохранить исполнителя');
-    return resData;
-  },
-
-  async updateEmployee(id: string, data: any): Promise<any> {
-    const res = await fetch(`/api/employees/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const resData = await res.json();
-    if (!res.ok) throw new Error(resData.error || 'Не удалось обновить исполнителя');
-    return resData;
-  },
-
-  async deleteEmployee(id: string): Promise<any> {
-    const res = await fetch(`/api/employees/${id}`, { method: 'DELETE' });
-    if (!res.ok) throw new Error('Не удалось удалить исполнителя');
-    return res.json();
+  async cancelOrder(orderId: string): Promise<Order> {
+    return this.updateOrderStatus(orderId, 'cancelled');
   },
 
   // --- REVIEWS ---
@@ -241,4 +263,3 @@ export const apiClient = {
     return data;
   }
 };
-

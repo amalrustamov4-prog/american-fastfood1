@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, MapPin, Truck, Store, CreditCard, Banknote, ShieldCheck, ArrowRight, Navigation } from 'lucide-react';
-import { CafeSettings, CartItem, Order, PaymentMethod } from '@/lib/types';
+import { CafeSettings, CartItem, Order, PaymentMethod, UserProfile } from '@/lib/types';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface CheckoutModalProps {
   discountAmount: number;
   promoCode?: string;
   cafeSettings: CafeSettings;
+  currentUser?: UserProfile | null;
   onSubmitOrder: (orderData: Partial<Order>) => void;
 }
 
@@ -21,15 +22,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   discountAmount,
   promoCode,
   cafeSettings,
+  currentUser,
   onSubmitOrder
 }) => {
   const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('+998 ');
-  const [address, setAddress] = useState('');
+  const [name, setName] = useState(currentUser?.name || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '+998 ');
+  const [address, setAddress] = useState(currentUser?.address || '');
   const [comment, setComment] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('payme');
   const [formError, setFormError] = useState('');
+
+  React.useEffect(() => {
+    if (currentUser) {
+      if (currentUser.name) setName(currentUser.name);
+      if (currentUser.phone) setPhone(currentUser.phone);
+      if (currentUser.address) setAddress(currentUser.address);
+    }
+  }, [currentUser]);
 
   if (!isOpen) return null;
 

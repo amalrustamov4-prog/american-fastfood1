@@ -6,17 +6,18 @@ import {
   RefreshCw,
   CheckCircle,
   Clock,
-  Truck,
   XCircle,
   Phone,
-  Bike,
   Flame,
-  UserCheck,
-  Ban,
-  ShieldCheck,
+  Search,
+  Check,
+  AlertCircle,
+  TrendingUp,
+  DollarSign,
+  PackageCheck,
   AlertTriangle
 } from 'lucide-react';
-import { Order, OrderStatus, Employee } from '@/lib/types';
+import { Order, OrderStatus } from '@/lib/types';
 import { apiClient } from '@/lib/api/client';
 import { ThermalReceipt } from '@/components/ThermalReceipt';
 
@@ -24,75 +25,108 @@ interface AdminOrdersTabProps {
   orders: Order[];
   onRefresh: () => void;
   cafeSettings: any;
-  couriers?: Employee[];
 }
 
 export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
   orders,
   onRefresh,
-  cafeSettings,
-  couriers = []
+  cafeSettings
 }) => {
   const [receiptOrder, setReceiptOrder] = useState<Order | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>('active');
-  const [loading, setLoading] = useState(false);
-  const [assignModalOrder, setAssignModalOrder] = useState<Order | null>(null);
-  const [selectedCourierId, setSelectedCourierId] = useState<string>('');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
 
-  const activeCouriers = couriers.filter((c) => c.role === 'kuryer' || c.role === 'taksi');
+  // Rejection modal
+  const [rejectModalOrder, setRejectModalOrder] = useState<Order | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   const handleStatusChange = async (
     orderId: string,
     newStatus: OrderStatus,
     paymentStatus?: string,
-    courierInfo?: { courierId?: string; courierName?: string; courierPhone?: string }
+    reason?: string
   ) => {
+    setLoadingOrderId(orderId);
     try {
-      await apiClient.updateOrderStatus(orderId, newStatus, paymentStatus, courierInfo);
-      // If user was on 'new' filter, keep order visible by switching to active
-      if (filterStatus === 'new') {
-        setFilterStatus('active');
-      }
+      await apiClient.updateOrderStatus(orderId, newStatus, paymentStatus, reason);
       onRefresh();
     } catch (err: any) {
       alert(err.message || 'Не удалось обновить статус');
+    } finally {
+      setLoadingOrderId(null);
     }
   };
 
-  const handleTransferToCourier = (order: Order) => {
-    if (activeCouriers.length > 0) {
-      setAssignModalOrder(order);
-      const free = activeCouriers.find((c) => c.status === 'free');
-      setSelectedCourierId(free ? free.id : activeCouriers[0].id);
-    } else {
-      // Auto assign so courier panel immediately receives it without blocking
-      handleStatusChange(order.id, 'delivering', undefined, {
-        courierName: 'Курьер AMERICAN (Термез)',
-        courierPhone: cafeSettings?.phone || '+998 90 822 01 01'
-      });
-    }
+  const handleConfirmReject = async () => {
+    if (!rejectModalOrder) return;
+    await handleStatusChange(
+      rejectModalOrder.id,
+      'rejected',
+      undefined,
+      rejectionReason || 'Отклонено администратором'
+    );
+    setRejectModalOrder(null);
+    setRejectionReason('');
   };
 
-  const confirmTransfer = async () => {
-    if (!assignModalOrder) return;
-    const courier = activeCouriers.find((c) => c.id === selectedCourierId);
-    await handleStatusChange(assignModalOrder.id, 'delivering', undefined, {
-      courierId: courier?.id,
-      courierName: courier ? `${courier.lastName} ${courier.firstName}` : 'Курьер AMERICAN',
-      courierPhone: courier?.phone || cafeSettings?.phone
-    });
-    setAssignModalOrder(null);
-  };
-
+  // Filter and search
   const filteredOrders = orders.filter((o) => {
-    if (filterStatus === 'all') return true;
-    if (filterStatus === 'active') return o.status === 'new' || o.status === 'cooking' || o.status === 'delivering';
-    return o.status === filterStatus;
+    const matchesFilter =
+      filterStatus === 'all'
+        ? true
+        : filterStatus === 'active'
+        ? ['new', 'accepted', 'cooking', 'ready'].includes(o.status)
+        : o.status === filterStatus;
+
+    if (!matchesFilter) return false;
+
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (o.orderNumber && o.orderNumber.toLowerCase().includes(q)) ||
+      o.customerName.toLowerCase().includes(q) ||
+      o.phone.toLowerCase().includes(q) ||
+      o.id.toLowerCase().includes(q)
+    );
   });
+
+  // Calculate KPIs
+  const totalRevenue = orders
+    .filter((o) => o.status === 'completed' || o.paymentStatus === 'paid')
+    .reduce((sum, o) => sum + o.total, 0);
+
+  const activeOrdersCount = orders.filter((o) =>
+    ['new', 'accepted', 'cooking', 'ready'].includes(o.status)
+  ).length;
+
+  const completedOrdersCount = orders.filter((o) => o.status === 'completed').length;
+  const avgCheck = completedOrdersCount > 0 ? Math.round(totalRevenue / completedOrdersCount) : 0;
+
+  const getStatusBadge = (status: OrderStatus) => {
+    switch (status) {
+      case 'new':
+        return { label: 'НОВЫЙ ЗАКАЗ', bg: '#EF4444', color: '#FFF' };
+      case 'accepted':
+        return { label: 'ПРИНЯТ', bg: '#3B82F6', color: '#FFF' };
+      case 'cooking':
+        return { label: 'ГОТОВИТСЯ', bg: '#F59E0B', color: '#000' };
+      case 'ready':
+        return { label: 'ГОТОВ К ВЫДАЧЕ', bg: '#10B981', color: '#FFF' };
+      case 'completed':
+        return { label: 'ЗАВЕРШЁН', bg: '#6B7280', color: '#FFF' };
+      case 'rejected':
+        return { label: 'ОТКЛОНЁН', bg: '#991B1B', color: '#FFF' };
+      case 'cancelled':
+        return { label: 'ОТМЕНЁН', bg: '#4B5563', color: '#FFF' };
+      default:
+        return { label: status, bg: '#374151', color: '#FFF' };
+    }
+  };
 
   return (
     <div>
-      {/* Header */}
+      {/* Top Header */}
       <div
         style={{
           display: 'flex',
@@ -104,50 +138,184 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
         }}
       >
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#fff' }}>
-            📦 Заказы клиентов (База данных в реальном времени)
+          <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#FFF', margin: 0 }}>
+            Управление заказами
           </h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-            Прямой контроль заказов, защита от фейков и быстрая передача курьерам
+          <p style={{ color: '#94A3B8', fontSize: '13px', margin: '4px 0 0 0' }}>
+            Централизованная система приёма заказов без курьеров
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button
+            onClick={onRefresh}
             style={{
-              background: 'var(--bg-card)',
-              border: '1.5px solid #FF5500',
-              color: '#fff',
-              padding: '10px 16px',
-              borderRadius: '12px',
-              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 18px',
+              background: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              borderRadius: '10px',
+              color: '#FFF',
               fontWeight: 700,
+              fontSize: '13px',
               cursor: 'pointer'
             }}
           >
-            <option value="active">⚡ В работе (Активные: {orders.filter((o) => o.status !== 'completed' && o.status !== 'cancelled').length})</option>
-            <option value="all">Все статусы ({orders.length})</option>
-            <option value="new">⏳ Новые ({orders.filter((o) => o.status === 'new').length})</option>
-            <option value="cooking">🔥 Готовятся ({orders.filter((o) => o.status === 'cooking').length})</option>
-            <option value="delivering">🚗 Доставляются ({orders.filter((o) => o.status === 'delivering').length})</option>
-            <option value="completed">✅ Выполнены ({orders.filter((o) => o.status === 'completed').length})</option>
-            <option value="cancelled">❌ Отменены ({orders.filter((o) => o.status === 'cancelled').length})</option>
-          </select>
-
-          <button
-            onClick={() => {
-              setLoading(true);
-              onRefresh();
-              setTimeout(() => setLoading(false), 500);
-            }}
-            className="btn-secondary"
-            style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+            <RefreshCw size={15} />
             <span>Обновить</span>
           </button>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '16px',
+          marginBottom: '28px'
+        }}
+      >
+        <div
+          style={{
+            background: 'linear-gradient(135deg, rgba(225, 29, 72, 0.15) 0%, rgba(255, 85, 0, 0.05) 100%)',
+            border: '1px solid rgba(225, 29, 72, 0.3)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#E11D48', marginBottom: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700 }}>В работе (Активные)</span>
+            <Flame size={20} />
+          </div>
+          <div style={{ fontSize: '28px', fontWeight: 900, color: '#FFF' }}>{activeOrdersCount}</div>
+        </div>
+
+        <div
+          style={{
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#10B981', marginBottom: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700 }}>Выручка (Оплачено)</span>
+            <DollarSign size={20} />
+          </div>
+          <div style={{ fontSize: '24px', fontWeight: 900, color: '#FFF' }}>
+            {totalRevenue.toLocaleString('ru-RU')} <span style={{ fontSize: '14px', color: '#94A3B8' }}>сум</span>
+          </div>
+        </div>
+
+        <div
+          style={{
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#3B82F6', marginBottom: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700 }}>Завершено заказов</span>
+            <PackageCheck size={20} />
+          </div>
+          <div style={{ fontSize: '28px', fontWeight: 900, color: '#FFF' }}>{completedOrdersCount}</div>
+        </div>
+
+        <div
+          style={{
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#F59E0B', marginBottom: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700 }}>Средний чек</span>
+            <TrendingUp size={20} />
+          </div>
+          <div style={{ fontSize: '24px', fontWeight: 900, color: '#FFF' }}>
+            {avgCheck.toLocaleString('ru-RU')} <span style={{ fontSize: '14px', color: '#94A3B8' }}>сум</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Search & Filters */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '12px',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px'
+        }}
+      >
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {[
+            { id: 'all', label: `Все (${orders.length})` },
+            { id: 'active', label: `В работе (${activeOrdersCount})` },
+            { id: 'new', label: `Новые (${orders.filter((o) => o.status === 'new').length})` },
+            { id: 'accepted', label: 'Приняты' },
+            { id: 'cooking', label: 'Готовятся' },
+            { id: 'ready', label: 'Готовы' },
+            { id: 'completed', label: 'Завершены' },
+            { id: 'rejected', label: 'Отклонены' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setFilterStatus(tab.id)}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 700,
+                background: filterStatus === tab.id ? '#E11D48' : 'rgba(255, 255, 255, 0.05)',
+                color: filterStatus === tab.id ? '#FFF' : '#94A3B8',
+                border: '1px solid',
+                borderColor: filterStatus === tab.id ? '#E11D48' : 'rgba(255, 255, 255, 0.1)',
+                cursor: 'pointer'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Live Search */}
+        <div
+          style={{
+            position: 'relative',
+            minWidth: '280px',
+            flex: '1',
+            maxWidth: '360px'
+          }}
+        >
+          <Search
+            size={16}
+            color="#94A3B8"
+            style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Поиск по #AM-1042, имени, телефону..."
+            style={{
+              width: '100%',
+              padding: '10px 14px 10px 36px',
+              borderRadius: '10px',
+              background: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: '#FFF',
+              fontSize: '13px',
+              outline: 'none',
+              boxSizing: 'border-box'
+            }}
+          />
         </div>
       </div>
 
@@ -155,419 +323,433 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
       {filteredOrders.length === 0 ? (
         <div
           style={{
-            background: 'var(--bg-card)',
-            borderRadius: '20px',
-            padding: '48px 20px',
+            padding: '60px 20px',
             textAlign: 'center',
-            border: '1px solid var(--border)'
+            background: 'rgba(255, 255, 255, 0.02)',
+            borderRadius: '16px',
+            border: '1px dashed rgba(255, 255, 255, 0.1)',
+            color: '#94A3B8'
           }}
         >
-          <Clock size={40} color="var(--text-dim)" style={{ marginBottom: '12px' }} />
-          <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>Нет заказов в этой категории</h3>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-            Новые заказы появятся здесь автоматически
-          </p>
+          <AlertCircle size={36} style={{ margin: '0 auto 12px', opacity: 0.5 }} />
+          <p style={{ fontSize: '15px', fontWeight: 600 }}>Заказы по заданным критериям не найдены</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {filteredOrders.map((order) => {
-            const isNew = order.status === 'new';
-            const isCooking = order.status === 'cooking';
-            const isDelivering = order.status === 'delivering';
-            const isCompleted = order.status === 'completed';
-            const isCancelled = order.status === 'cancelled';
+            const badge = getStatusBadge(order.status);
+            const isProcessing = loadingOrderId === order.id;
 
             return (
               <div
                 key={order.id}
                 style={{
-                  background: isNew ? 'linear-gradient(180deg, #1C2030 0%, #161824 100%)' : 'var(--bg-card)',
-                  border: isNew ? '2px solid #FFCC00' : '1px solid var(--border)',
-                  borderRadius: '20px',
-                  padding: '22px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                  boxShadow: isNew ? '0 8px 30px rgba(255, 204, 0, 0.15)' : 'none'
+                  background: order.status === 'new' ? 'rgba(239, 68, 68, 0.06)' : 'rgba(255, 255, 255, 0.03)',
+                  border: order.status === 'new' ? '2px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  boxShadow: order.status === 'new' ? '0 8px 30px rgba(239, 68, 68, 0.15)' : 'none'
                 }}
               >
-                {/* Top Info Bar */}
+                {/* Header row */}
                 <div
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'flex-start',
                     flexWrap: 'wrap',
-                    gap: '12px'
+                    gap: '12px',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                    paddingBottom: '14px',
+                    marginBottom: '14px'
                   }}
                 >
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '20px', fontWeight: 900, color: '#fff' }}>
-                        Заказ #{order.id}
-                      </span>
-
-                      {/* Status Badge */}
-                      <span
-                        style={{
-                          background: isCompleted
-                            ? 'rgba(16, 185, 129, 0.2)'
-                            : isDelivering
-                            ? 'rgba(0, 115, 255, 0.25)'
-                            : isCancelled
-                            ? 'rgba(239, 68, 68, 0.2)'
-                            : isCooking
-                            ? 'rgba(255, 85, 0, 0.25)'
-                            : 'rgba(255, 204, 0, 0.25)',
-                          color: isCompleted
-                            ? '#10B981'
-                            : isDelivering
-                            ? '#60A5FA'
-                            : isCancelled
-                            ? '#EF4444'
-                            : isCooking
-                            ? '#FF5500'
-                            : '#FFCC00',
-                          padding: '4px 12px',
-                          borderRadius: '9999px',
-                          fontSize: '12px',
-                          fontWeight: 800,
-                          textTransform: 'uppercase',
-                          border: isNew ? '1px solid #FFCC00' : 'none'
-                        }}
-                      >
-                        {isNew
-                          ? '⏳ Янги буюртма (Ожидает)'
-                          : isCooking
-                          ? '🔥 Готовится на кухне'
-                          : isDelivering
-                          ? '🚗 В пути (У курьера)'
-                          : isCompleted
-                          ? '✅ Выполнен'
-                          : '❌ Отменен'}
-                      </span>
-
-                      {/* Delivery type */}
-                      <span
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.08)',
-                          color: '#ddd',
-                          padding: '3px 8px',
-                          borderRadius: '6px',
-                          fontSize: '11px',
-                          fontWeight: 700
-                        }}
-                      >
-                        {order.deliveryType === 'delivery' ? '🚗 Доставка' : '🛍️ Самовывоз'}
-                      </span>
-                    </div>
-
-                    {/* Prominent Customer Contact Box (Required by User!) */}
-                    <div
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                    <span
                       style={{
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        borderRadius: '12px',
-                        padding: '10px 14px',
-                        marginTop: '10px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: '10px'
+                        fontSize: '18px',
+                        fontWeight: 900,
+                        color: '#FFF',
+                        letterSpacing: '0.5px'
                       }}
                     >
-                      <div>
-                        <div style={{ fontSize: '13px', color: '#bbb' }}>
-                          Клиент: <strong style={{ color: '#fff', fontSize: '15px' }}>{order.customerName}</strong>
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#60A5FA', marginTop: '2px', fontWeight: 600 }}>
-                          📍 {order.address}
-                        </div>
-                      </div>
+                      {order.orderNumber || order.id}
+                    </span>
 
-                      {/* Large One-Tap Call Button */}
-                      <a
-                        href={`tel:${order.phone}`}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          background: '#10B981',
-                          color: '#fff',
-                          padding: '8px 16px',
-                          borderRadius: '10px',
-                          fontSize: '14px',
-                          fontWeight: 900,
-                          textDecoration: 'none',
-                          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-                        }}
-                      >
-                        <Phone size={16} />
-                        <span>Позвонить: {order.phone}</span>
-                      </a>
-                    </div>
+                    <span
+                      style={{
+                        background: badge.bg,
+                        color: badge.color,
+                        padding: '4px 10px',
+                        borderRadius: '9999px',
+                        fontSize: '11px',
+                        fontWeight: 900,
+                        letterSpacing: '0.5px'
+                      }}
+                    >
+                      {badge.label}
+                    </span>
 
-                    {/* Payment details */}
-                    <div style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '8px' }}>
-                      Оплата: <strong style={{ color: 'var(--secondary)' }}>{order.paymentMethod.toUpperCase()}</strong>{' '}
-                      ({order.paymentStatus === 'paid' ? 'Оплачен ✅' : 'При получении 💵'})
-                      {order.courierName && (
-                        <span style={{ marginLeft: '12px', color: '#FFCC00', fontWeight: 700 }}>
-                          🚗 Курьер: {order.courierName} ({order.courierPhone})
-                        </span>
-                      )}
-                    </div>
+                    <span
+                      style={{
+                        background: order.paymentStatus === 'paid' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)',
+                        color: order.paymentStatus === 'paid' ? '#10B981' : '#F59E0B',
+                        padding: '4px 10px',
+                        borderRadius: '9999px',
+                        fontSize: '11px',
+                        fontWeight: 700
+                      }}
+                    >
+                      {order.paymentMethod.toUpperCase()} • {order.paymentStatus === 'paid' ? 'Оплачен' : 'Ожидает оплаты'}
+                    </span>
                   </div>
 
-                  {/* Actions & Print */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                    <button
-                      onClick={() => setReceiptOrder(order)}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.08)',
-                        color: '#fff',
-                        padding: '8px 14px',
-                        borderRadius: '10px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '13px',
-                        fontWeight: 700,
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <Printer size={15} />
-                      <span>Чек</span>
-                    </button>
-
-                    {/* Status Dropdown */}
-                    <select
-                      value={order.status}
-                      onChange={(e) => handleStatusChange(order.id, e.target.value as any)}
-                      style={{
-                        background: 'var(--bg-input)',
-                        border: '1px solid var(--border)',
-                        color: '#fff',
-                        padding: '8px 12px',
-                        borderRadius: '10px',
-                        fontSize: '13px',
-                        fontWeight: 700,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <option value="new">Новый</option>
-                      <option value="cooking">Готовится</option>
-                      <option value="delivering">Доставляется</option>
-                      <option value="completed">Выполнен</option>
-                      <option value="cancelled">Отменен / Фейк</option>
-                    </select>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94A3B8', fontSize: '12px' }}>
+                    <Clock size={14} />
+                    <span>
+                      {new Date(order.createdAt).toLocaleTimeString('ru-RU', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                      {' • '}
+                      {new Date(order.createdAt).toLocaleDateString('ru-RU')}
+                    </span>
                   </div>
                 </div>
 
-                {/* Items in Order */}
+                {/* Customer & delivery info */}
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.02)',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                    gap: '12px',
+                    marginBottom: '16px',
+                    background: 'rgba(0, 0, 0, 0.25)',
                     padding: '12px 16px',
-                    borderRadius: '12px',
-                    fontSize: '13px'
+                    borderRadius: '12px'
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px' }}>Состав заказа:</div>
-                  {order.items.map((i, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', margin: '3px 0' }}>
-                      <span>
-                        {i.quantity}x {i.name}
-                      </span>
-                      <span style={{ fontWeight: 700, color: 'var(--secondary)' }}>
-                        {(i.price * i.quantity).toLocaleString('ru-RU')} сум
-                      </span>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#94A3B8', textTransform: 'uppercase', fontWeight: 700 }}>
+                      Клиент
                     </div>
-                  ))}
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontWeight: 900,
-                      fontSize: '15px',
-                      marginTop: '10px',
-                      paddingTop: '8px',
-                      borderTop: '1px solid var(--border)',
-                      color: '#fff'
-                    }}
-                  >
-                    <span>Итого к оплате:</span>
-                    <span style={{ color: 'var(--secondary)' }}>{order.total.toLocaleString('ru-RU')} сум</span>
+                    <div style={{ fontSize: '14px', fontWeight: 800, color: '#FFF', marginTop: '2px' }}>
+                      {order.customerName}
+                    </div>
+                    <a
+                      href={`tel:${order.phone}`}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        color: '#3B82F6',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        textDecoration: 'none',
+                        marginTop: '2px'
+                      }}
+                    >
+                      <Phone size={12} />
+                      <span>{order.phone}</span>
+                    </a>
                   </div>
+
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#94A3B8', textTransform: 'uppercase', fontWeight: 700 }}>
+                      Способ получения & Адрес
+                    </div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFF', marginTop: '2px' }}>
+                      {order.deliveryType === 'delivery' ? '🏠 Доставка на дом' : '🏬 Самовывоз из ресторана'}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#CBD5E1', marginTop: '2px' }}>
+                      {order.address}
+                    </div>
+                  </div>
+
                   {order.comment && (
-                    <div style={{ marginTop: '8px', fontSize: '12px', color: '#FFCC00' }}>
-                      💬 Комментарий клиента: <em>{order.comment}</em>
+                    <div>
+                      <div style={{ fontSize: '11px', color: '#94A3B8', textTransform: 'uppercase', fontWeight: 700 }}>
+                        Комментарий клиента
+                      </div>
+                      <div style={{ fontSize: '13px', color: '#FCD34D', fontStyle: 'italic', marginTop: '2px' }}>
+                        «{order.comment}»
+                      </div>
+                    </div>
+                  )}
+
+                  {order.rejectionReason && (
+                    <div>
+                      <div style={{ fontSize: '11px', color: '#EF4444', textTransform: 'uppercase', fontWeight: 700 }}>
+                        Причина отклонения
+                      </div>
+                      <div style={{ fontSize: '13px', color: '#FCA5A5', marginTop: '2px' }}>
+                        {order.rejectionReason}
+                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* QUICK WORKFLOW ACTION BUTTONS (As requested by user!) */}
+                {/* Status History Timeline */}
+                {order.statusHistory && order.statusHistory.length > 0 && (
+                  <div style={{ marginBottom: '16px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', marginBottom: '8px', textTransform: 'uppercase' }}>
+                      Хронология статусов
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                      {order.statusHistory.map((h: any, idx: number) => {
+                        const badge = getStatusBadge(h.status);
+                        return (
+                          <div key={h.id || idx} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <div style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              background: 'rgba(255,255,255,0.04)',
+                              border: `1px solid ${badge.bg}44`,
+                              borderRadius: '8px',
+                              padding: '4px 8px',
+                              minWidth: '90px'
+                            }}>
+                              <span style={{ fontSize: '10px', fontWeight: 800, color: badge.bg }}>{badge.label}</span>
+                              <span style={{ fontSize: '9px', color: '#64748B', marginTop: '1px' }}>
+                                {new Date(h.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            </div>
+                            {idx < order.statusHistory.length - 1 && (
+                              <span style={{ color: '#4B5563', fontSize: '14px' }}>→</span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Items table */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8', marginBottom: '8px' }}>
+                    Состав заказа ({order.items.reduce((s, i) => s + i.quantity, 0)} шт.):
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {order.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '6px 12px',
+                          background: 'rgba(255, 255, 255, 0.02)',
+                          borderRadius: '8px',
+                          fontSize: '13px'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontWeight: 800, color: '#E11D48' }}>{item.quantity}x</span>
+                          <span style={{ color: '#FFF', fontWeight: 600 }}>{item.name}</span>
+                          {item.selectedOptions && item.selectedOptions.length > 0 && (
+                            <span style={{ color: '#94A3B8', fontSize: '11px' }}>
+                              (+{item.selectedOptions.map((o: any) => o.name).join(', ')})
+                            </span>
+                          )}
+                        </div>
+                        <span style={{ color: '#FFF', fontWeight: 700 }}>
+                          {(item.price * item.quantity).toLocaleString('ru-RU')} сум
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bottom row: Total & Admin Actions */}
                 <div
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                    paddingTop: '10px',
-                    borderTop: '1px solid rgba(255,255,255,0.08)'
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    paddingTop: '12px',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.06)'
                   }}
                 >
-                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    {/* Step 1: When order is NEW -> Accept & Cook button */}
-                    {isNew && (
-                      <>
-                        <button
-                          onClick={() => handleStatusChange(order.id, 'cooking')}
-                          style={{
-                            background: 'linear-gradient(135deg, #FF5500 0%, #CC2200 100%)',
-                            color: '#fff',
-                            border: 'none',
-                            padding: '12px 22px',
-                            borderRadius: '12px',
-                            fontSize: '14px',
-                            fontWeight: 800,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            cursor: 'pointer',
-                            boxShadow: '0 4px 14px rgba(255, 85, 0, 0.4)'
-                          }}
-                        >
-                          <Flame size={17} />
-                          <span>🔥 Принять заказ (Готовится на кухне)</span>
-                        </button>
-
-                        <button
-                          onClick={() => handleStatusChange(order.id, 'cancelled')}
-                          style={{
-                            background: 'rgba(239, 68, 68, 0.15)',
-                            color: '#EF4444',
-                            border: '1px solid rgba(239, 68, 68, 0.3)',
-                            padding: '10px 16px',
-                            borderRadius: '12px',
-                            fontSize: '13px',
-                            fontWeight: 700,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <Ban size={15} />
-                          <span>Отклонить (Фейк)</span>
-                        </button>
-                      </>
-                    )}
-
-                    {/* Step 2: When COOKING -> Dedicated "Передано курьеру" button! */}
-                    {isCooking && (
-                      <>
-                        <button
-                          onClick={() => handleTransferToCourier(order)}
-                          style={{
-                            background: 'linear-gradient(135deg, #FFCC00 0%, #FFAA00 100%)',
-                            color: '#000',
-                            border: 'none',
-                            padding: '12px 24px',
-                            borderRadius: '12px',
-                            fontSize: '14px',
-                            fontWeight: 900,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            cursor: 'pointer',
-                            boxShadow: '0 4px 16px rgba(255, 204, 0, 0.4)'
-                          }}
-                        >
-                          <Truck size={18} color="#000" />
-                          <span>🚗 ПЕРЕДАНО КУРЬЕРУ (В путь)</span>
-                        </button>
-
-                        <button
-                          onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
-                          style={{
-                            background: 'rgba(16, 185, 129, 0.15)',
-                            border: '1px solid rgba(16, 185, 129, 0.4)',
-                            color: '#10B981',
-                            padding: '10px 18px',
-                            borderRadius: '12px',
-                            fontSize: '13px',
-                            fontWeight: 800,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                          }}
-                        >
-                          <CheckCircle size={15} />
-                          <span>Выдан клиенту (Самовывоз)</span>
-                        </button>
-                      </>
-                    )}
-
-                    {/* Step 3: When DELIVERING -> Complete order button */}
-                    {isDelivering && (
-                      <button
-                        onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
-                        style={{
-                          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                          color: '#fff',
-                          border: 'none',
-                          padding: '12px 24px',
-                          borderRadius: '12px',
-                          fontSize: '14px',
-                          fontWeight: 800,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          cursor: 'pointer',
-                          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)'
-                        }}
-                      >
-                        <CheckCircle size={17} />
-                        <span>✅ Доставлено клиенту (Завершить заказ)</span>
-                      </button>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                    <span style={{ fontSize: '13px', color: '#94A3B8' }}>Итого к оплате:</span>
+                    <span style={{ fontSize: '20px', fontWeight: 900, color: '#FFF' }}>
+                      {order.total.toLocaleString('ru-RU')} сум
+                    </span>
+                    {order.discountAmount > 0 && (
+                      <span style={{ fontSize: '12px', color: '#10B981' }}>
+                        (Скидка: {order.discountAmount.toLocaleString('ru-RU')} сум)
+                      </span>
                     )}
                   </div>
 
-                  {/* Manual Quick Status Chips for instant control */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                    <span style={{ fontSize: '11px', color: 'var(--text-dim)', marginRight: '4px' }}>
-                      Сменить этап вручную:
-                    </span>
+                  {/* Action buttons based on status */}
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {/* Thermal Receipt Button */}
                     <button
-                      type="button"
-                      onClick={() => handleStatusChange(order.id, 'new')}
-                      style={{ background: order.status === 'new' ? 'rgba(255,204,0,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#FFCC00', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+                      onClick={() => setReceiptOrder(order)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 14px',
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                        borderRadius: '8px',
+                        color: '#CBD5E1',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
                     >
-                      ⏳ Новый
+                      <Printer size={14} />
+                      <span>Чек</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(order.id, 'cooking')}
-                      style={{ background: order.status === 'cooking' ? 'rgba(255,85,0,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#FF7722', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
-                    >
-                      🔥 Готовится
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleTransferToCourier(order)}
-                      style={{ background: order.status === 'delivering' ? 'rgba(96,165,250,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#60A5FA', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
-                    >
-                      🚗 У курьера
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
-                      style={{ background: order.status === 'completed' ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: '#10B981', borderRadius: '6px', padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
-                    >
-                      ✅ Доставлен
-                    </button>
+
+                    {/* Step 1: NEW -> ACCEPT or REJECT */}
+                    {order.status === 'new' && (
+                      <>
+                        <button
+                          disabled={isProcessing}
+                          onClick={() => handleStatusChange(order.id, 'accepted')}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '10px 18px',
+                            background: '#10B981',
+                            color: '#FFF',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: 800,
+                            fontSize: '13px',
+                            cursor: isProcessing ? 'wait' : 'pointer',
+                            boxShadow: '0 4px 15px rgba(16, 185, 129, 0.35)'
+                          }}
+                        >
+                          <Check size={16} />
+                          <span>Принять заказ</span>
+                        </button>
+
+                        <button
+                          disabled={isProcessing}
+                          onClick={() => setRejectModalOrder(order)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '10px 16px',
+                            background: 'rgba(239, 68, 68, 0.15)',
+                            color: '#EF4444',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            fontSize: '13px',
+                            cursor: isProcessing ? 'wait' : 'pointer'
+                          }}
+                        >
+                          <XCircle size={15} />
+                          <span>Отклонить</span>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Step 2: ACCEPTED -> START COOKING */}
+                    {order.status === 'accepted' && (
+                      <button
+                        disabled={isProcessing}
+                        onClick={() => handleStatusChange(order.id, 'cooking')}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '10px 18px',
+                          background: '#F59E0B',
+                          color: '#000',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontWeight: 800,
+                          fontSize: '13px',
+                          cursor: isProcessing ? 'wait' : 'pointer',
+                          boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
+                        }}
+                      >
+                        <Flame size={16} />
+                        <span>Начать готовку</span>
+                      </button>
+                    )}
+
+                    {/* Step 3: COOKING -> MARK READY */}
+                    {order.status === 'cooking' && (
+                      <button
+                        disabled={isProcessing}
+                        onClick={() => handleStatusChange(order.id, 'ready')}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '10px 18px',
+                          background: '#3B82F6',
+                          color: '#FFF',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontWeight: 800,
+                          fontSize: '13px',
+                          cursor: isProcessing ? 'wait' : 'pointer',
+                          boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
+                        }}
+                      >
+                        <CheckCircle size={16} />
+                        <span>Готов к выдаче</span>
+                      </button>
+                    )}
+
+                    {/* Step 4: READY -> COMPLETE */}
+                    {order.status === 'ready' && (
+                      <button
+                        disabled={isProcessing}
+                        onClick={() => handleStatusChange(order.id, 'completed', 'paid')}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '10px 18px',
+                          background: '#10B981',
+                          color: '#FFF',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontWeight: 800,
+                          fontSize: '13px',
+                          cursor: isProcessing ? 'wait' : 'pointer',
+                          boxShadow: '0 4px 15px rgba(16, 185, 129, 0.35)'
+                        }}
+                      >
+                        <PackageCheck size={16} />
+                        <span>Завершить заказ</span>
+                      </button>
+                    )}
+
+                    {/* Quick status reset / manual switch if needed */}
+                    {['accepted', 'cooking', 'ready'].includes(order.status) && (
+                      <button
+                        disabled={isProcessing}
+                        onClick={() => setRejectModalOrder(order)}
+                        style={{
+                          padding: '8px 12px',
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          color: '#EF4444',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          cursor: isProcessing ? 'wait' : 'pointer'
+                        }}
+                      >
+                        Отменить
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -576,14 +758,14 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
         </div>
       )}
 
-      {/* MODAL: ASSIGN TO COURIER */}
-      {assignModalOrder && (
+      {/* Reject Modal */}
+      {rejectModalOrder && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.75)',
-            backdropFilter: 'blur(8px)',
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(5px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -593,96 +775,72 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
         >
           <div
             style={{
-              background: '#181C2A',
-              border: '2px solid #FFCC00',
-              borderRadius: '24px',
-              padding: '28px',
-              maxWidth: '480px',
+              background: '#1A1D26',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '16px',
+              padding: '24px',
               width: '100%',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
+              maxWidth: '440px'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <Truck size={24} color="#FFCC00" />
-              <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#fff', margin: 0 }}>
-                Передать заказ #{assignModalOrder.id} курьеру
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#EF4444', marginBottom: '12px' }}>
+              <AlertTriangle size={20} />
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
+                Отклонить заказ {rejectModalOrder.orderNumber || rejectModalOrder.id}
               </h3>
             </div>
 
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-              Выберите свободного курьера из автопарка Yandex Fleet / AMERICAN для доставки клиенту:
+            <p style={{ color: '#94A3B8', fontSize: '13px', marginBottom: '16px' }}>
+              Укажите причину для клиента (например: «закончились ингредиенты» или «вне зоны доставки»):
             </p>
 
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '12px', color: '#999', marginBottom: '8px', fontWeight: 700 }}>
-                Курьер для доставки:
-              </label>
-              <select
-                value={selectedCourierId}
-                onChange={(e) => setSelectedCourierId(e.target.value)}
-                style={{
-                  width: '100%',
-                  background: '#222',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  padding: '12px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  outline: 'none'
-                }}
-              >
-                {activeCouriers.length === 0 ? (
-                  <option value="">Нет зарегистрированных курьеров</option>
-                ) : (
-                  activeCouriers.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.status === 'free' ? '🟢' : c.status === 'on_order' ? '🟡' : '🔴'} {c.lastName} {c.firstName}{' '}
-                      ({c.courierType === 'avto' ? `🚗 ${c.vehiclePlate || 'Авто'}` : c.courierType === 'moto' ? '🛵 Мото' : '🚶 Пеший'}) — {c.phone}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Причина отклонения..."
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '12px',
+                borderRadius: '10px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#FFF',
+                fontSize: '13px',
+                outline: 'none',
+                boxSizing: 'border-box',
+                marginBottom: '20px'
+              }}
+            />
 
-            {/* Destination info */}
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px 16px', borderRadius: '12px', marginBottom: '20px', fontSize: '13px' }}>
-              <div>Клиент: <strong style={{ color: '#fff' }}>{assignModalOrder.customerName}</strong></div>
-              <div style={{ color: '#60A5FA', marginTop: '4px' }}>Адрес: {assignModalOrder.address}</div>
-              <div style={{ color: '#10B981', marginTop: '4px' }}>Телефон: {assignModalOrder.phone}</div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
               <button
-                onClick={confirmTransfer}
+                onClick={() => setRejectModalOrder(null)}
                 style={{
-                  flex: 1,
-                  background: '#FFCC00',
-                  color: '#000',
-                  padding: '14px',
-                  borderRadius: '12px',
-                  fontWeight: 900,
-                  fontSize: '14px',
+                  padding: '10px 16px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  color: '#FFF',
+                  borderRadius: '8px',
                   border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                Подтвердить передачу 🚗
-              </button>
-
-              <button
-                onClick={() => setAssignModalOrder(null)}
-                style={{
-                  padding: '14px 20px',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: 'none',
-                  color: '#fff',
-                  borderRadius: '12px',
                   fontWeight: 700,
                   cursor: 'pointer'
                 }}
               >
                 Отмена
+              </button>
+              <button
+                onClick={handleConfirmReject}
+                style={{
+                  padding: '10px 18px',
+                  background: '#EF4444',
+                  color: '#FFF',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontWeight: 800,
+                  cursor: 'pointer'
+                }}
+              >
+                Подтвердить отклонение
               </button>
             </div>
           </div>

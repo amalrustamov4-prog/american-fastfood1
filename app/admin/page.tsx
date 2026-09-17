@@ -30,7 +30,7 @@ export default function AdminPage() {
     if (isAuthenticated) {
       loadAllData();
 
-      // Poll server for new orders every 5 seconds with kitchen sound alert
+      // Poll server for new orders every 2 seconds for lightning fast speed
       const interval = setInterval(async () => {
         try {
           const freshOrders = await apiClient.getOrders();
@@ -46,7 +46,7 @@ export default function AdminPage() {
         } catch (e) {
           // Ignore background poll errors
         }
-      }, 5000);
+      }, 2000);
 
       return () => clearInterval(interval);
     }

@@ -15,11 +15,31 @@ import {
   TrendingUp,
   DollarSign,
   PackageCheck,
-  AlertTriangle
+  AlertTriangle,
+  Volume2,
+  Zap
 } from 'lucide-react';
 import { Order, OrderStatus } from '@/lib/types';
 import { apiClient } from '@/lib/api/client';
 import { ThermalReceipt } from '@/components/ThermalReceipt';
+import { playKitchenNewOrderSound } from '@/components/AudioNotifier';
+
+function getOrderAge(createdAt: string): { label: string; isFresh: boolean; color: string } {
+  const diffSec = Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 1000));
+  if (diffSec < 60) {
+    return { label: `⚡ ${diffSec} сек назад`, isFresh: true, color: '#10B981' };
+  }
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) {
+    return {
+      label: `⏱ ${diffMin} мин назад`,
+      isFresh: diffMin <= 3,
+      color: diffMin < 15 ? '#38BDF8' : '#F59E0B'
+    };
+  }
+  const diffHours = Math.floor(diffMin / 60);
+  return { label: `⏱ ${diffHours} ч назад`, isFresh: false, color: '#94A3B8' };
+}
 
 interface AdminOrdersTabProps {
   orders: Order[];
@@ -146,24 +166,75 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Live Radar Badge */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 14px',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '10px',
+              color: '#10B981',
+              fontWeight: 800,
+              fontSize: '12px'
+            }}
+          >
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#10B981',
+                boxShadow: '0 0 10px #10B981',
+                display: 'inline-block'
+              }}
+            />
+            <span>LIVE (2 сек)</span>
+          </div>
+
+          {/* Sound Test Button */}
+          <button
+            onClick={() => playKitchenNewOrderSound()}
+            title="Проверить звук оповещения кухни"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '9px 14px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              borderRadius: '10px',
+              color: '#FFF',
+              fontWeight: 700,
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            <Volume2 size={14} color="#F59E0B" />
+            <span>Тест звука</span>
+          </button>
+
+          {/* Refresh Button */}
           <button
             onClick={onRefresh}
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '10px 18px',
-              background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              padding: '9px 16px',
+              background: 'linear-gradient(135deg, #E11D48, #FF5500)',
+              border: 'none',
               borderRadius: '10px',
               color: '#FFF',
-              fontWeight: 700,
-              fontSize: '13px',
+              fontWeight: 800,
+              fontSize: '12px',
               cursor: 'pointer'
             }}
           >
-            <RefreshCw size={15} />
+            <RefreshCw size={14} />
             <span>Обновить</span>
           </button>
         </div>
@@ -389,6 +460,28 @@ export const AdminOrdersTab: React.FC<AdminOrdersTabProps> = ({
                     >
                       {badge.label}
                     </span>
+
+                    {(() => {
+                      const age = getOrderAge(order.createdAt);
+                      return (
+                        <span
+                          style={{
+                            background: age.isFresh ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.06)',
+                            border: `1px solid ${age.color}40`,
+                            color: age.color,
+                            padding: '4px 10px',
+                            borderRadius: '9999px',
+                            fontSize: '11px',
+                            fontWeight: 800,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {age.label}
+                        </span>
+                      );
+                    })()}
 
                     <span
                       style={{
